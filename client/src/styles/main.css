@@ -1,3 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: 'fallback for Poppins';
+  src: local('Arial');
+  ascent-override: 105%;
+  descent-override: 35%;
+  line-gap-override: 10%;
+}
+
+:root {
+  font-family: Poppins, 'fallback for Poppins', sans-serif;
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-gradient-to-tr from-stone-950 via-indigo-950 via-70% to-stone-950;
+  @apply text-gray-50;
+}

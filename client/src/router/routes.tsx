@@ -7,7 +7,7 @@ import {
 
 import DefaultLayout from '~/layouts/default'
 
-const Home = () => import('../pages/index')
+const Home = () => import('../pages/index.jsx')
 
 const routes = createRoutesFromElements(
   <Route element={<DefaultLayout />}>
