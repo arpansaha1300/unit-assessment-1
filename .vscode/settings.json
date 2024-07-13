@@ -1,0 +1,8 @@
+{
+  "prettier.enable": true,
+  "prettier.requireConfig": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": false,
+  "java.configuration.updateBuildConfiguration": "interactive",
+  "java.compile.nullAnalysis.mode": "automatic"
+}
