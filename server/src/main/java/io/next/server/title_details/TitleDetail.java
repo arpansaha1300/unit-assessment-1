@@ -34,7 +34,7 @@ public class TitleDetail {
   @Column(name = "type", nullable = false)
   private String type;
 
-  @Column(name = "runtime_minutes", nullable = false)
+  @Column(name = "runtime_minutes")
   private Integer runtimeMinutes;
 
   @Column(name = "year", nullable = false)
@@ -55,10 +55,10 @@ public class TitleDetail {
   @Column(name = "critic_score")
   private Double criticScore;
 
-  @Column(name = "poster", nullable = false)
+  @Column(name = "poster")
   private String poster;
 
-  @Column(name = "backdrop", nullable = false)
+  @Column(name = "backdrop")
   private String backdrop;
 
   @Column(name = "original_language", nullable = false)
@@ -70,10 +70,10 @@ public class TitleDetail {
   @Column(name = "popularity_percentile", nullable = false)
   private Double popularityPercentile;
 
-  @Column(name = "trailer", nullable = false)
+  @Column(name = "trailer")
   private String trailer;
 
-  @Column(name = "trailer_thumbnail", nullable = false)
+  @Column(name = "trailer_thumbnail")
   private String trailerThumbnail;
 
   @Column(name = "genres", nullable = false)

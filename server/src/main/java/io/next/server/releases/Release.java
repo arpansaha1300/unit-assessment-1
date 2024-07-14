@@ -31,7 +31,7 @@ public class Release {
   @Column(name = "imdb_id", nullable = false, unique = true)
   private String imdbId;
 
-  @Column(name = "season_number", nullable = false)
+  @Column(name = "season_number", nullable = true)
   private Integer seasonNumber;
 
   @Column(name = "poster_url")
