@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import Badge from './Badge'
 import Poster from './Poster'
 
@@ -7,14 +8,15 @@ interface CardProps {
   price: number | null
 }
 
-export default function Card({ release, titleDetail }: CardProps) {
+export default function Card(props: Readonly<CardProps>) {
+  const { release, titleDetail, price } = props
+
   return (
     <div className="rounded-xl overflow-hidden shadow-lg flex ring ring-gray-900 ring-opacity-10 bg-gradient-to-tr even:bg-gradient-to-bl from-indigo-950 to-indigo-900">
       <div className="relative">
-        <Poster
-          poster_url={release.poster_url}
-          title={`${release.title} poster`}
-        />
+        <div className="w-[185px] h-[278px]">
+          <Poster poster_url={release.poster_url} title={release.title} />
+        </div>
 
         <span className="absolute inset-0 bg-gradient-to-br from-indigo-950/30" />
 
@@ -30,7 +32,14 @@ export default function Card({ release, titleDetail }: CardProps) {
             {titleDetail.end_year && ` - ${titleDetail.end_year}`}
           </p>
 
-          <h2 className="mt-1 text-2xl font-bold">{release.title}</h2>
+          <h2 className="mt-1 text-2xl font-bold">
+            <Link
+              to={`/${release.to}`}
+              className="hover:text-indigo-200 transition-colors"
+            >
+              {release.title}
+            </Link>
+          </h2>
 
           <div className="mt-2 flex gap-2 flex-wrap">
             {titleDetail.genre_names.slice(0, 3).map((genre: string) => (
@@ -39,14 +48,18 @@ export default function Card({ release, titleDetail }: CardProps) {
           </div>
 
           {titleDetail.user_rating && (
-            <p className="mt-2">
-              <span className="text-sm font-bold text-indigo-300">
+            <p className="mt-2.5">
+              {price && (
+                <>
+                  <span className="inline-block font-semibold text-2xl text-emerald-300">
+                    {price}
+                  </span>
+                  <span className="inline-block mx-2">•</span>
+                </>
+              )}
+              <span className="inline-block text-sm font-bold text-indigo-300">
                 {titleDetail.user_rating} / 10
               </span>
-              {/* {' • '}
-          <span>
-            {price}
-          </span> */}
             </p>
           )}
         </div>
@@ -56,9 +69,12 @@ export default function Card({ release, titleDetail }: CardProps) {
             {titleDetail.plot_overview}
           </p>
 
-          <p className="mt-2 text-sm text-indigo-400 hover:text-indigo-500 font-semibold">
+          <Link
+            to={`/${release.id}`}
+            className="block mt-2 text-sm text-indigo-400 hover:text-indigo-300 font-semibold transition-colors"
+          >
             View &rarr;
-          </p>
+          </Link>
         </div>
       </div>
     </div>

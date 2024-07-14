@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { getReleases, getTitleDetails, getTitleSources } from '~/api'
-import Card from '~/components/common/Card'
-import Loader from '~/components/common/Loader'
+import Card from '~common/Card'
+import Loader from '~common/Loader'
+import Container from '~common/Container'
 
 export function Component() {
   const [releases, setReleases] = useState([])
@@ -17,7 +18,7 @@ export function Component() {
   }, [])
 
   return (
-    <main className="py-16 mx-auto max-w-5xl">
+    <Container as="main">
       <p className="text-xl font-semibold text-indigo-400">Movies & TV Shows</p>
       <h1 className="mt-2 text-5xl font-bold"> Recently Released </h1>
 
@@ -37,7 +38,7 @@ export function Component() {
           ))}
         </div>
       )}
-    </main>
+    </Container>
   )
 }
 
