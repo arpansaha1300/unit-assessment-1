@@ -6,6 +6,7 @@ import Poster from '~common/Poster'
 import Container from '~common/Container'
 import YoutubeEmbed from '~/components/YoutubeEmbed'
 import { getTitleDetails, getTitleSources } from '~/api'
+import Year from '~/components/Year'
 
 export function Component() {
   const params = useParams()
@@ -46,10 +47,11 @@ export function Component() {
         </div>
 
         <div className="col-span-3">
-          <p className="text-sm text-gray-400 font-semibold">
-            {titleDetail.year}{' '}
-            {titleDetail.end_year && ` - ${titleDetail.end_year}`}
-          </p>
+          <Year
+            year={titleDetail.year}
+            endYear={titleDetail.end_date}
+            fontSize="text-sm"
+          />
 
           <h1 className="mt-1 text-5xl font-bold">{titleDetail.title}</h1>
 
@@ -64,7 +66,7 @@ export function Component() {
               {price && (
                 <>
                   <span className="inline-block font-semibold text-2xl text-emerald-300">
-                    {price}
+                    ${price}
                   </span>
                   <span className="inline-block mx-2.5">•</span>
                 </>

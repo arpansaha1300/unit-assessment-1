@@ -9,11 +9,18 @@ export default function YoutubeEmbed({ src, title }: YoutubeEmbedProps) {
   const [_src, setSrc] = useState(src)
 
   useEffect(() => {
-    if (src.includes('watch')) {
+    if (src && src.includes('watch')) {
       setSrc(src.replace('watch?v=', 'embed/'))
     }
   }, [src])
 
+  if (!_src) {
+    return (
+      <div>
+        <p>Trailer not available</p>
+      </div>
+    )
+  }
   return (
     <iframe
       width="560"

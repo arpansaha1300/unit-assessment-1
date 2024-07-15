@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom'
 import Badge from './Badge'
 import Poster from './Poster'
+import Year from '../Year'
+import classNames from '~/utils/classNames'
 
 interface CardProps {
   release: any
@@ -10,6 +12,8 @@ interface CardProps {
 
 export default function Card(props: Readonly<CardProps>) {
   const { release, titleDetail, price } = props
+
+  const year = parseInt(titleDetail.year)
 
   return (
     <div className="rounded-xl overflow-hidden shadow-lg flex ring ring-gray-900 ring-opacity-10 bg-gradient-to-tr even:bg-gradient-to-bl from-indigo-950 to-indigo-900">
@@ -27,14 +31,20 @@ export default function Card(props: Readonly<CardProps>) {
 
       <div className="flex-grow p-4 flex flex-col justify-between">
         <div>
-          <p className="text-xs text-gray-400 font-semibold">
-            {titleDetail.year}{' '}
-            {titleDetail.end_year && ` - ${titleDetail.end_year}`}
-          </p>
+          <Year
+            year={titleDetail.year}
+            endYear={titleDetail.end_date}
+            fontSize="text-xs"
+          />
 
-          <h2 className="mt-1 text-2xl font-bold">
+          <h2
+            className={classNames(
+              Boolean(year) && 'mt-1',
+              'text-2xl font-bold'
+            )}
+          >
             <Link
-              to={`/${release.to}`}
+              to={`/${release.id}`}
               className="hover:text-indigo-200 transition-colors"
             >
               {release.title}
@@ -52,7 +62,7 @@ export default function Card(props: Readonly<CardProps>) {
               {price && (
                 <>
                   <span className="inline-block font-semibold text-2xl text-emerald-300">
-                    {price}
+                    ${price}
                   </span>
                   <span className="inline-block mx-2">•</span>
                 </>

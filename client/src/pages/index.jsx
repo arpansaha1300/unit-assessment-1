@@ -53,7 +53,7 @@ async function initData(
   const details = []
   const sources = []
   const prices = []
-  const { releases } = await getReleases()
+  const releases = await getReleases()
 
   for (const release of releases) {
     const [detail, currSources] = await Promise.all([
