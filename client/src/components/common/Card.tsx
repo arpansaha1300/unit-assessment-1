@@ -58,7 +58,7 @@ export default function Card(props: Readonly<CardProps>) {
             ))}
           </div>
 
-          {titleDetail.user_rating && (
+          {(titleDetail.user_rating || price) && (
             <p className="mt-2.5">
               {price && (
                 <>
@@ -68,15 +68,17 @@ export default function Card(props: Readonly<CardProps>) {
                   <span className="inline-block mx-2">•</span>
                 </>
               )}
-              <span className="inline-block text-sm font-bold text-indigo-300">
-                {titleDetail.user_rating} / 10
-              </span>
+              {titleDetail.user_rating && (
+                <span className="inline-block text-sm font-bold text-indigo-300">
+                  {titleDetail.user_rating} / 10
+                </span>
+              )}
             </p>
           )}
         </div>
 
         <div>
-          <p className="mt-4 sm:mt-0 text-xs text-gray-300 line-clamp-3">
+          <p className="mt-4 sm:mt-0 text-xs text-gray-300 line-clamp-3 sm:line-clamp-4">
             {titleDetail.plot_overview}
           </p>
 

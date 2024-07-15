@@ -33,7 +33,7 @@ export function Component() {
             <Card
               key={release.id}
               release={release}
-              prices={prices[i]}
+              price={prices[i]}
               titleDetail={titleDetails[i]}
             />
           ))}
