@@ -1,9 +1,6 @@
 package io.next.server.common.converters;
 
-import java.io.IOException;
 import java.util.ArrayList;
-
-import org.json.JSONArray;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -15,7 +12,7 @@ import jakarta.persistence.Converter;
 @Converter(autoApply = true)
 public class JpaConverterJson implements AttributeConverter<ArrayList<?>, String> {
 
-  private final static ObjectMapper objectMapper = new ObjectMapper();
+  private static final ObjectMapper objectMapper = new ObjectMapper();
 
   @Override
   public String convertToDatabaseColumn(ArrayList<?> meta) {

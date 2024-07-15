@@ -11,12 +11,12 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.sql.Date;
-import java.sql.Connection;
-import java.sql.SQLException;
-
 import java.util.List;
 import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.PreparedStatement;
+import java.sql.SQLIntegrityConstraintViolationException;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -31,8 +31,6 @@ public class Release {
         "poster_url, source_release_date, source_id, source_name, is_original, id) " +
         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    ArrayList<Long> releaseIds = new ArrayList<>();
-
     try (PreparedStatement statement = connection.prepareStatement(sql)) {
 
       statement.setObject(1, release.getTitle());
@@ -46,10 +44,10 @@ public class Release {
       statement.setObject(9, release.getIsOriginal());
       statement.setObject(10, release.getId());
 
-      releaseIds.add(release.id);
       final int rowsAffected = statement.executeUpdate();
       System.out.println("Inserted " + rowsAffected + " row(s) into the releases table.");
 
+    } catch (SQLIntegrityConstraintViolationException e) {
     } catch (SQLException e) {
       e.printStackTrace();
     }
