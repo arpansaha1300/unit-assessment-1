@@ -7,9 +7,12 @@ export interface RequestOptions extends Omit<RequestInit, 'body' | 'method'> {
   body?: Record<string, any>
 }
 
-export const FETCH_BASE_URL = 'https://api.watchmode.com/v1/'
+export const FETCH_BASE_URL = 'http://localhost:4000/api/'
 
-export default function createRequest(url: string, options: RequestOptions = {}): Request {
+export default function createRequest(
+  url: string,
+  options: RequestOptions = {}
+): Request {
   let headers: RequestOptions['headers'] = {
     'Content-Type': 'text/plain',
   }
@@ -27,10 +30,7 @@ export default function createRequest(url: string, options: RequestOptions = {})
     options.mode = 'cors'
   }
 
-  const query = options.query ?? new URLSearchParams()
-  query.append("apiKey", import.meta.env.VITE_WATCHMODE_API_KEY!)
-
-  const requestUrl = FETCH_BASE_URL + url + '/?' + query.toString()
+  const requestUrl = FETCH_BASE_URL + url
 
   return new Request(requestUrl, {
     ...options,
