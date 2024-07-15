@@ -26,8 +26,8 @@ public class TitleSources {
     ArrayList<Response> titleSources = getTitleSources(titleId);
 
     String sql = "INSERT INTO title_sources (source_id, name, type, region, " +
-        "web_url, format, price, seasons, episodes) " +
-        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        "web_url, format, price, seasons, episodes, title_id) " +
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     titleSources.forEach(titleSource -> {
       try (Connection connection = DriverManager.getConnection(url, username,
@@ -43,6 +43,7 @@ public class TitleSources {
         statement.setObject(7, titleSource.getPrice());
         statement.setObject(8, titleSource.getSeasons());
         statement.setObject(9, titleSource.getEpisodes());
+        statement.setObject(10, titleId);
 
         int rowsAffected = statement.executeUpdate();
         System.out.println("Inserted " + rowsAffected + " row(s) into the title_sources table.");
@@ -54,7 +55,7 @@ public class TitleSources {
   }
 
   private static ArrayList<Response> getTitleSources(Long titleId) {
-    Dotenv dotenv = Dotenv.configure().directory("seed").load();
+    Dotenv dotenv = Dotenv.load();
 
     String url = Api.API_BASE_URL + "title/" + titleId + "/sources/?apiKey=" + dotenv.get("API_KEY");
     String stringifiedJson = Api.call(url);

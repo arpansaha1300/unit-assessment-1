@@ -31,8 +31,8 @@ public class Release {
     ArrayList<Response> releases = getReleases();
 
     String sql = "INSERT INTO releases (title, type, imdb_id, season_number, " +
-        "poster_url, source_release_date, source_id, source_name, is_original) " +
-        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        "poster_url, source_release_date, source_id, source_name, is_original, id) " +
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     ArrayList<Long> releaseIds = new ArrayList<>();
 
@@ -50,6 +50,7 @@ public class Release {
         statement.setObject(7, release.getSourceId());
         statement.setObject(8, release.getSourceName());
         statement.setObject(9, release.getIsOriginal());
+        statement.setObject(10, release.getId());
 
         releaseIds.add(release.id);
         int rowsAffected = statement.executeUpdate();
@@ -64,9 +65,9 @@ public class Release {
   }
 
   private static ArrayList<Response> getReleases() {
-    Dotenv dotenv = Dotenv.configure().directory("seed").load();
+    Dotenv dotenv = Dotenv.load();
 
-    String url = Api.API_BASE_URL + "releases/?limit=2&apiKey=" + dotenv.get("API_KEY");
+    String url = Api.API_BASE_URL + "releases/?limit=20&apiKey=" + dotenv.get("API_KEY");
     String stringifiedJson = Api.call(url);
     JSONObject obj = new JSONObject(stringifiedJson);
 

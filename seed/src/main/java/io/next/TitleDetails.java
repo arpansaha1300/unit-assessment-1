@@ -32,8 +32,8 @@ public class TitleDetails {
     String sql = "INSERT INTO title_details (title, original_title, plot_overview, type, " +
         "runtime_minutes, year, end_year, release_date, imdb_id, user_rating, critic_score, " +
         "poster, backdrop, original_language, relevance_percentile, popularity_percentile, " +
-        "trailer, trailer_thumbnail, genres, genre_names) " +
-        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        "trailer, trailer_thumbnail, genres, genre_names, id) " +
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     titleDetails.forEach(titleDetail -> {
       try (Connection connection = DriverManager.getConnection(url, username,
@@ -60,6 +60,7 @@ public class TitleDetails {
         statement.setObject(18, titleDetail.getTrailerThumbnail());
         statement.setObject(19, titleDetail.getGenresJson());
         statement.setObject(20, titleDetail.getGenreNamesJson());
+        statement.setObject(21, titleId);
 
         int rowsAffected = statement.executeUpdate();
         System.out.println("Inserted " + rowsAffected + " row(s) into the title_details table.");
@@ -71,7 +72,7 @@ public class TitleDetails {
   }
 
   private static ArrayList<Response> getTitleDetails(Long titleId) {
-    Dotenv dotenv = Dotenv.configure().directory("seed").load();
+    Dotenv dotenv = Dotenv.load();
 
     String url = Api.API_BASE_URL + "title/" + titleId + "/details/?apiKey=" + dotenv.get("API_KEY");
     String stringifiedJson = Api.call(url);

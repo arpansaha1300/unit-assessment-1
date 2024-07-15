@@ -5,7 +5,7 @@ import java.util.List;
 import io.github.cdimascio.dotenv.Dotenv;
 
 public class App {
-    static Dotenv dotenv = Dotenv.configure().directory("seed").load();
+    static Dotenv dotenv = Dotenv.load();
 
     public static void main(String[] args) {
         String url = dotenv.get("DB_URL");
