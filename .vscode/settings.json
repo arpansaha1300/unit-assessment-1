@@ -3,6 +3,6 @@
   "prettier.requireConfig": true,
   "editor.formatOnSave": true,
   "editor.formatOnPaste": false,
-  "java.configuration.updateBuildConfiguration": "interactive",
+  "java.configuration.updateBuildConfiguration": "automatic",
   "java.compile.nullAnalysis.mode": "automatic"
 }
