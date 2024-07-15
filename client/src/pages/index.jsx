@@ -7,7 +7,8 @@ import Container from '~common/Container'
 export function Component() {
   const [releases, setReleases] = useState([])
   const [titleDetails, setTitleDetails] = useState([])
-  const [titleSources, setTitleSources] = useState([])
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, setTitleSources] = useState([])
   const [prices, setPrices] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -27,7 +28,7 @@ export function Component() {
           <Loader className="mx-auto w-6" />
         </div>
       ) : (
-        <div className="mt-16 grid grid-cols-2 gap-8">
+        <div className="mt-16 grid sm:grid-cols-2 gap-6 sm:gap-8">
           {releases.map((release, i) => (
             <Card
               key={release.id}
@@ -67,7 +68,6 @@ async function initData(
       if (source.price === null) continue
       if (price === null) price = source.price
       else price = Math.min(source.price, price)
-      console.log(source.price)
     }
 
     details.push(detail)
@@ -79,5 +79,4 @@ async function initData(
   setTitleDetails(details)
   setTitleSources(sources)
   setPrices(prices)
-  console.log(prices)
 }

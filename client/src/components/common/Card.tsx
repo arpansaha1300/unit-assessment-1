@@ -16,20 +16,21 @@ export default function Card(props: Readonly<CardProps>) {
   const year = parseInt(titleDetail.year)
 
   return (
-    <div className="rounded-xl overflow-hidden shadow-lg flex ring ring-gray-900 ring-opacity-10 bg-gradient-to-tr even:bg-gradient-to-bl from-indigo-950 to-indigo-900">
+    <div className="rounded-xl overflow-hidden shadow-lg sm:flex ring ring-gray-900 ring-opacity-10 bg-gradient-to-tr even:bg-gradient-to-bl from-indigo-950 to-indigo-900 relative">
       <div className="relative">
-        <div className="w-[185px] h-[278px]">
+        <div className="sm:w-[185px] sm:h-[278px]">
           <Poster poster_url={release.poster_url} title={release.title} />
         </div>
 
-        <span className="absolute inset-0 bg-gradient-to-br from-indigo-950/30" />
+        <span className="hidden sm:block absolute inset-0 bg-gradient-to-br from-indigo-950/30" />
+        <span className="sm:hidden absolute inset-0 top-1/3 bg-gradient-to-t from-stone-950" />
 
         <div className="absolute top-2 left-2">
           <Badge badge={release.source_name} />
         </div>
       </div>
 
-      <div className="flex-grow p-4 flex flex-col justify-between">
+      <div className="flex-grow p-4 flex flex-col justify-between absolute z-10 bottom-0 sm:static">
         <div>
           <Year
             year={titleDetail.year}
@@ -75,7 +76,7 @@ export default function Card(props: Readonly<CardProps>) {
         </div>
 
         <div>
-          <p className="text-xs text-gray-300 line-clamp-3">
+          <p className="mt-4 sm:mt-0 text-xs text-gray-300 line-clamp-3">
             {titleDetail.plot_overview}
           </p>
 

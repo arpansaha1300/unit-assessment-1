@@ -12,7 +12,8 @@ export function Component() {
   const params = useParams()
 
   const [titleDetail, setTitleDetails] = useState(null)
-  const [titleSources, setTitleSources] = useState([])
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, setTitleSources] = useState([])
   const [price, setPrice] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -34,19 +35,19 @@ export function Component() {
     <Container as="main">
       <Link
         to="/"
-        className="text-sm text-indigo-400 hover:text-indigo-300 font-semibold transition-colors"
+        className="sm:text-sm text-indigo-400 hover:text-indigo-300 font-semibold transition-colors"
       >
         &larr; Back
       </Link>
 
-      <section className="mt-4 grid grid-cols-4 gap-8">
+      <section className="mt-4 sm:grid grid-cols-4 gap-8">
         <div className="relative rounded overflow-hidden">
-          <div className="w-[185px] h-[278px]">
+          <div className="sm:w-[185px] sm:h-[278px]">
             <Poster poster_url={titleDetail.poster} title={titleDetail.title} />
           </div>
         </div>
 
-        <div className="col-span-3">
+        <div className="mt-6 sm:mt-0 col-span-3">
           <Year
             year={titleDetail.year}
             endYear={titleDetail.end_date}
@@ -90,29 +91,11 @@ export function Component() {
           <YoutubeEmbed src={titleDetail.trailer} title={titleDetail.title} />
         </div>
       </section>
-
-      {/* <section className="mt-12">
-        <h2 className="mb-8 text-4xl font-bold">Sources</h2>
-
-        <div>
-          {titleSources.map(source => (
-            <SourceCard source={source} />
-          ))}
-        </div>
-      </section> */}
     </Container>
   )
 }
 
 Component.displayName = 'Details'
-
-// function SourceCard({ source }) {
-//   return (
-//     <div className="rounded-xl overflow-hidden shadow-lg flex ring ring-gray-900 ring-opacity-10 bg-gradient-to-tr even:bg-gradient-to-bl from-indigo-950 to-indigo-900">
-
-//     </div>
-//   )
-// }
 
 async function initData(releaseId, setTitleDetails, setTitleSources, setPrice) {
   const [detail, currSources] = await Promise.all([
@@ -126,7 +109,6 @@ async function initData(releaseId, setTitleDetails, setTitleSources, setPrice) {
     if (source.price === null) continue
     if (price === null) price = source.price
     else price = Math.min(source.price, price)
-    console.log(source.price)
   }
 
   setTitleDetails(detail)
