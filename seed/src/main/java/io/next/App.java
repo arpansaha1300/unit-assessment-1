@@ -1,6 +1,9 @@
 package io.next;
 
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -12,6 +15,13 @@ public class App {
     static Dotenv dotenv = Dotenv.load();
 
     public static void main(String[] args) {
+        refresh();
+        // Runnable refreshRunnable = App::refresh;
+        // ScheduledExecutorService exec = Executors.newScheduledThreadPool(1);
+        // exec.scheduleAtFixedRate(refreshRunnable, 0, 1, TimeUnit.MINUTES);
+    }
+
+    public static void refresh() {
         String url = dotenv.get("DB_URL");
         String username = dotenv.get("DB_USER");
         String password = dotenv.get("DB_PASSWORD");
