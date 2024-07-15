@@ -23,16 +23,15 @@ public class TitleSources {
   private TitleSources() {
   }
 
-  public static void insert(String url, String username, String password, Long titleId,
+  public static void insert(Connection connection, Long titleId,
       List<TitleSources.Response> titleSources) {
+
     String sql = "INSERT INTO title_sources (source_id, name, type, region, " +
         "web_url, format, price, seasons, episodes, title_id) " +
         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     titleSources.forEach(titleSource -> {
-      try (Connection connection = DriverManager.getConnection(url, username,
-          password);
-          PreparedStatement statement = connection.prepareStatement(sql)) {
+      try (PreparedStatement statement = connection.prepareStatement(sql)) {
 
         statement.setObject(1, titleSource.getSourceId());
         statement.setObject(2, titleSource.getName());
@@ -45,7 +44,7 @@ public class TitleSources {
         statement.setObject(9, titleSource.getEpisodes());
         statement.setObject(10, titleId);
 
-        int rowsAffected = statement.executeUpdate();
+        final int rowsAffected = statement.executeUpdate();
         System.out.println("Inserted " + rowsAffected + " row(s) into the title_sources table.");
 
       } catch (SQLException e) {

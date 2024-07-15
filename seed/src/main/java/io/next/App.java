@@ -1,7 +1,10 @@
 package io.next;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.DriverManager;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
@@ -22,12 +25,16 @@ public class App {
             titleSources.add(TitleSources.fetchTitleSources(release.getId()));
         });
 
-        for (int i = 0; i < releases.size(); i++) {
-            Release.insert(url, username, password, releases.get(i));
+        try (final Connection connection = DriverManager.getConnection(url, username, password)) {
+            for (int i = 0; i < releases.size(); i++) {
+                Release.insert(connection, releases.get(i));
 
-            final TitleDetails.Response titleDetail = titleDetails.get(i);
-            TitleDetails.insert(url, username, password, titleDetail);
-            TitleSources.insert(url, username, password, titleDetail.getId(), titleSources.get(i));
+                final TitleDetails.Response titleDetail = titleDetails.get(i);
+                TitleDetails.insert(connection, titleDetail);
+                TitleSources.insert(connection, titleDetail.getId(), titleSources.get(i));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

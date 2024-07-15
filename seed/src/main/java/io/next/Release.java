@@ -16,27 +16,24 @@ import java.sql.SQLException;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.sql.PreparedStatement;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 
 public class Release {
   private Release() {
   }
 
-  public static void insert(String url, String username, String password, Release.Response release) {
+  public static void insert(Connection connection, Release.Response release) {
+
     String sql = "INSERT INTO releases (title, type, imdb_id, season_number, " +
         "poster_url, source_release_date, source_id, source_name, is_original, id) " +
         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     ArrayList<Long> releaseIds = new ArrayList<>();
 
-    try (Connection connection = DriverManager.getConnection(url, username,
-        password);
-        PreparedStatement statement = connection.prepareStatement(sql)) {
+    try (PreparedStatement statement = connection.prepareStatement(sql)) {
 
       statement.setObject(1, release.getTitle());
       statement.setObject(2, release.getType());
@@ -50,7 +47,7 @@ public class Release {
       statement.setObject(10, release.getId());
 
       releaseIds.add(release.id);
-      int rowsAffected = statement.executeUpdate();
+      final int rowsAffected = statement.executeUpdate();
       System.out.println("Inserted " + rowsAffected + " row(s) into the releases table.");
 
     } catch (SQLException e) {

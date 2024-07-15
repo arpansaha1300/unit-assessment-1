@@ -26,7 +26,7 @@ public class TitleDetails {
   private TitleDetails() {
   }
 
-  public static void insert(String url, String username, String password, TitleDetails.Response titleDetails) {
+  public static void insert(Connection connection, TitleDetails.Response titleDetails) {
 
     String sql = "INSERT INTO title_details (title, original_title, plot_overview, type, " +
         "runtime_minutes, year, end_year, release_date, imdb_id, user_rating, critic_score, " +
@@ -34,9 +34,7 @@ public class TitleDetails {
         "trailer, trailer_thumbnail, genres, genre_names, id) " +
         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    try (Connection connection = DriverManager.getConnection(url, username,
-        password);
-        PreparedStatement statement = connection.prepareStatement(sql)) {
+    try (PreparedStatement statement = connection.prepareStatement(sql)) {
 
       statement.setObject(1, titleDetails.getTitle());
       statement.setObject(2, titleDetails.getOriginalTitle());
@@ -60,7 +58,7 @@ public class TitleDetails {
       statement.setObject(20, titleDetails.getGenreNamesJson());
       statement.setObject(21, titleDetails.getId());
 
-      int rowsAffected = statement.executeUpdate();
+      final int rowsAffected = statement.executeUpdate();
       System.out.println("Inserted " + rowsAffected + " row(s) into the title_details table.");
 
     } catch (SQLException e) {
@@ -151,12 +149,6 @@ public class TitleDetails {
 
     @JsonProperty("trailer_thumbnail")
     private String trailerThumbnail;
-
-    // @JsonProperty("genres")
-    // private ArrayList<Integer> genres;
-
-    // @JsonProperty("genre_names")
-    // private ArrayList<String> genreNames;
 
     @JsonIgnore
     public String genresJson;
