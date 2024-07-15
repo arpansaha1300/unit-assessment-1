@@ -2,7 +2,12 @@ package io.next.server.title_details;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+
+import java.util.ArrayList;
+
+import io.next.server.common.converters.JpaConverterJson;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,7 +24,6 @@ import lombok.NoArgsConstructor;
 public class TitleDetail {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(name = "title", nullable = false)
@@ -28,7 +32,7 @@ public class TitleDetail {
   @Column(name = "original_title", nullable = false)
   private String originalTitle;
 
-  @Column(name = "plot_overview", nullable = false)
+  @Column(name = "plot_overview")
   private String plotOverview;
 
   @Column(name = "type", nullable = false)
@@ -43,13 +47,13 @@ public class TitleDetail {
   @Column(name = "end_year")
   private Integer endYear;
 
-  @Column(name = "release_date", nullable = false)
+  @Column(name = "release_date")
   private String releaseDate;
 
-  @Column(name = "imdb_id", unique = true, nullable = false)
+  @Column(name = "imdb_id")
   private String imdbId;
 
-  @Column(name = "user_rating", nullable = false)
+  @Column(name = "user_rating")
   private Double userRating;
 
   @Column(name = "critic_score")
@@ -77,8 +81,10 @@ public class TitleDetail {
   private String trailerThumbnail;
 
   @Column(name = "genres", nullable = false)
-  private Integer[] genres;
+  @Convert(converter = JpaConverterJson.class)
+  private ArrayList<Integer> genres;
 
   @Column(name = "genre_names", nullable = false)
-  private String[] genreNames;
+  @Convert(converter = JpaConverterJson.class)
+  private ArrayList<String> genreNames;
 }

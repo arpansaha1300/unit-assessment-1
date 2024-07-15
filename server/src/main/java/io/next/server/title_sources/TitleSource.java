@@ -20,10 +20,13 @@ public class TitleSource {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  private long id;
 
   @Column(name = "source_id", nullable = false)
-  private Integer sourceId;
+  private long sourceId;
+
+  @Column(name = "title_id", nullable = false)
+  private long titleId;
 
   @Column(name = "name", nullable = false)
   private String name;
@@ -37,7 +40,7 @@ public class TitleSource {
   @Column(name = "web_url", nullable = false)
   private String webUrl;
 
-  @Column(name = "format", nullable = false)
+  @Column(name = "format")
   private String format;
 
   @Column(name = "price")
