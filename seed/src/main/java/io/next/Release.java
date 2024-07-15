@@ -27,47 +27,41 @@ public class Release {
   private Release() {
   }
 
-  public static List<Long> refresh(String url, String username, String password) {
-    ArrayList<Response> releases = getReleases();
-
+  public static void insert(String url, String username, String password, Release.Response release) {
     String sql = "INSERT INTO releases (title, type, imdb_id, season_number, " +
         "poster_url, source_release_date, source_id, source_name, is_original, id) " +
         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     ArrayList<Long> releaseIds = new ArrayList<>();
 
-    releases.forEach(release -> {
-      try (Connection connection = DriverManager.getConnection(url, username,
-          password);
-          PreparedStatement statement = connection.prepareStatement(sql)) {
+    try (Connection connection = DriverManager.getConnection(url, username,
+        password);
+        PreparedStatement statement = connection.prepareStatement(sql)) {
 
-        statement.setObject(1, release.getTitle());
-        statement.setObject(2, release.getType());
-        statement.setObject(3, release.getImdbId());
-        statement.setObject(4, release.getSeasonNumber());
-        statement.setObject(5, release.getPosterUrl());
-        statement.setObject(6, release.getSourceReleaseDate());
-        statement.setObject(7, release.getSourceId());
-        statement.setObject(8, release.getSourceName());
-        statement.setObject(9, release.getIsOriginal());
-        statement.setObject(10, release.getId());
+      statement.setObject(1, release.getTitle());
+      statement.setObject(2, release.getType());
+      statement.setObject(3, release.getImdbId());
+      statement.setObject(4, release.getSeasonNumber());
+      statement.setObject(5, release.getPosterUrl());
+      statement.setObject(6, release.getSourceReleaseDate());
+      statement.setObject(7, release.getSourceId());
+      statement.setObject(8, release.getSourceName());
+      statement.setObject(9, release.getIsOriginal());
+      statement.setObject(10, release.getId());
 
-        releaseIds.add(release.id);
-        int rowsAffected = statement.executeUpdate();
-        System.out.println("Inserted " + rowsAffected + " row(s) into the releases table.");
+      releaseIds.add(release.id);
+      int rowsAffected = statement.executeUpdate();
+      System.out.println("Inserted " + rowsAffected + " row(s) into the releases table.");
 
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
-    });
-
-    return releaseIds;
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
   }
 
-  private static ArrayList<Response> getReleases() {
+  public static List<Response> fetchReleases() {
     Dotenv dotenv = Dotenv.load();
 
-    String url = Api.API_BASE_URL + "releases/?limit=20&apiKey=" + dotenv.get("API_KEY");
+    String url = Api.API_BASE_URL + "releases/?limit=1&apiKey=" + dotenv.get("API_KEY");
     String stringifiedJson = Api.call(url);
     JSONObject obj = new JSONObject(stringifiedJson);
 

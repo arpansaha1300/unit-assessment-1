@@ -1,5 +1,6 @@
 package io.next;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.github.cdimascio.dotenv.Dotenv;
@@ -12,10 +13,21 @@ public class App {
         String username = dotenv.get("DB_USER");
         String password = dotenv.get("DB_PASSWORD");
 
-        List<Long> releaseIds = Release.refresh(url, username, password);
-        releaseIds.forEach(id -> {
-            TitleDetails.refresh(url, username, password, id);
-            TitleSources.refresh(url, username, password, id);
+        final List<Release.Response> releases = Release.fetchReleases();
+        ArrayList<TitleDetails.Response> titleDetails = new ArrayList<>();
+        ArrayList<List<TitleSources.Response>> titleSources = new ArrayList<>();
+
+        releases.forEach(release -> {
+            titleDetails.add(TitleDetails.fetchTitleDetails(release.getId()));
+            titleSources.add(TitleSources.fetchTitleSources(release.getId()));
         });
+
+        for (int i = 0; i < releases.size(); i++) {
+            Release.insert(url, username, password, releases.get(i));
+
+            final TitleDetails.Response titleDetail = titleDetails.get(i);
+            TitleDetails.insert(url, username, password, titleDetail);
+            TitleSources.insert(url, username, password, titleDetail.getId(), titleSources.get(i));
+        }
     }
 }

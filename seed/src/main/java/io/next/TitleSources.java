@@ -1,10 +1,11 @@
 package io.next;
 
+import java.util.List;
+import java.util.ArrayList;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -22,9 +23,8 @@ public class TitleSources {
   private TitleSources() {
   }
 
-  public static void refresh(String url, String username, String password, Long titleId) {
-    ArrayList<Response> titleSources = getTitleSources(titleId);
-
+  public static void insert(String url, String username, String password, Long titleId,
+      List<TitleSources.Response> titleSources) {
     String sql = "INSERT INTO title_sources (source_id, name, type, region, " +
         "web_url, format, price, seasons, episodes, title_id) " +
         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -54,7 +54,7 @@ public class TitleSources {
     });
   }
 
-  private static ArrayList<Response> getTitleSources(Long titleId) {
+  public static ArrayList<Response> fetchTitleSources(Long titleId) {
     Dotenv dotenv = Dotenv.load();
 
     String url = Api.API_BASE_URL + "title/" + titleId + "/sources/?apiKey=" + dotenv.get("API_KEY");

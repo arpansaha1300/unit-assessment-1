@@ -26,8 +26,7 @@ public class TitleDetails {
   private TitleDetails() {
   }
 
-  public static void refresh(String url, String username, String password, Long titleId) {
-    ArrayList<Response> titleDetails = getTitleDetails(titleId);
+  public static void insert(String url, String username, String password, TitleDetails.Response titleDetails) {
 
     String sql = "INSERT INTO title_details (title, original_title, plot_overview, type, " +
         "runtime_minutes, year, end_year, release_date, imdb_id, user_rating, critic_score, " +
@@ -35,43 +34,41 @@ public class TitleDetails {
         "trailer, trailer_thumbnail, genres, genre_names, id) " +
         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    titleDetails.forEach(titleDetail -> {
-      try (Connection connection = DriverManager.getConnection(url, username,
-          password);
-          PreparedStatement statement = connection.prepareStatement(sql)) {
+    try (Connection connection = DriverManager.getConnection(url, username,
+        password);
+        PreparedStatement statement = connection.prepareStatement(sql)) {
 
-        statement.setObject(1, titleDetail.getTitle());
-        statement.setObject(2, titleDetail.getOriginalTitle());
-        statement.setObject(3, titleDetail.getPlotOverview());
-        statement.setObject(4, titleDetail.getType());
-        statement.setObject(5, titleDetail.getRuntimeMinutes());
-        statement.setObject(6, titleDetail.getYear());
-        statement.setObject(7, titleDetail.getEndYear());
-        statement.setObject(8, titleDetail.getReleaseDate());
-        statement.setObject(9, titleDetail.getImdbId());
-        statement.setObject(10, titleDetail.getUserRating());
-        statement.setObject(11, titleDetail.getCriticScore());
-        statement.setObject(12, titleDetail.getPoster());
-        statement.setObject(13, titleDetail.getBackdrop());
-        statement.setObject(14, titleDetail.getOriginalLanguage());
-        statement.setObject(15, titleDetail.getRelevancePercentile());
-        statement.setObject(16, titleDetail.getPopularityPercentile());
-        statement.setObject(17, titleDetail.getTrailer());
-        statement.setObject(18, titleDetail.getTrailerThumbnail());
-        statement.setObject(19, titleDetail.getGenresJson());
-        statement.setObject(20, titleDetail.getGenreNamesJson());
-        statement.setObject(21, titleId);
+      statement.setObject(1, titleDetails.getTitle());
+      statement.setObject(2, titleDetails.getOriginalTitle());
+      statement.setObject(3, titleDetails.getPlotOverview());
+      statement.setObject(4, titleDetails.getType());
+      statement.setObject(5, titleDetails.getRuntimeMinutes());
+      statement.setObject(6, titleDetails.getYear());
+      statement.setObject(7, titleDetails.getEndYear());
+      statement.setObject(8, titleDetails.getReleaseDate());
+      statement.setObject(9, titleDetails.getImdbId());
+      statement.setObject(10, titleDetails.getUserRating());
+      statement.setObject(11, titleDetails.getCriticScore());
+      statement.setObject(12, titleDetails.getPoster());
+      statement.setObject(13, titleDetails.getBackdrop());
+      statement.setObject(14, titleDetails.getOriginalLanguage());
+      statement.setObject(15, titleDetails.getRelevancePercentile());
+      statement.setObject(16, titleDetails.getPopularityPercentile());
+      statement.setObject(17, titleDetails.getTrailer());
+      statement.setObject(18, titleDetails.getTrailerThumbnail());
+      statement.setObject(19, titleDetails.getGenresJson());
+      statement.setObject(20, titleDetails.getGenreNamesJson());
+      statement.setObject(21, titleDetails.getId());
 
-        int rowsAffected = statement.executeUpdate();
-        System.out.println("Inserted " + rowsAffected + " row(s) into the title_details table.");
+      int rowsAffected = statement.executeUpdate();
+      System.out.println("Inserted " + rowsAffected + " row(s) into the title_details table.");
 
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
-    });
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
   }
 
-  private static ArrayList<Response> getTitleDetails(Long titleId) {
+  public static Response fetchTitleDetails(Long titleId) {
     Dotenv dotenv = Dotenv.load();
 
     String url = Api.API_BASE_URL + "title/" + titleId + "/details/?apiKey=" + dotenv.get("API_KEY");
@@ -80,20 +77,17 @@ public class TitleDetails {
     JSONArray genres = obj.getJSONArray("genres");
     JSONArray genreNames = obj.getJSONArray("genre_names");
 
-    ArrayList<Response> titleDetails = new ArrayList<>();
     ObjectMapper objectMapper = new ObjectMapper();
 
     try {
-      Response titleDetail = objectMapper.readValue(obj.toString(), Response.class);
-      titleDetail.genresJson = genres.toString();
-      titleDetail.genreNamesJson = genreNames.toString();
-      titleDetails.add(titleDetail);
+      Response titleDetails = objectMapper.readValue(obj.toString(), Response.class);
+      titleDetails.genresJson = genres.toString();
+      titleDetails.genreNamesJson = genreNames.toString();
+      return titleDetails;
     } catch (JsonProcessingException e) {
       e.printStackTrace();
       throw new Error(e.getMessage());
     }
-
-    return titleDetails;
   }
 
   @Getter()
