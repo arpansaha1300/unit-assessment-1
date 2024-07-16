@@ -5,7 +5,7 @@ import Loader from '~common/Loader'
 import Poster from '~common/Poster'
 import Container from '~common/Container'
 import YoutubeEmbed from '~/components/YoutubeEmbed'
-import { getMovieById, getPostersByMovieId, getVendorsByMovieId } from '~/api'
+import { getMovieById, getVendorsByMovieId } from '~/api'
 // import Year from '~/components/Year'
 
 export function Component() {
@@ -86,24 +86,6 @@ export function Component() {
           <YoutubeEmbed src={movie.trailer} title={movie.title} />
         </div>
       </section>
-
-      <section className="mt-12">
-        <h2 className="mb-8 text-4xl font-bold">Vendors</h2>
-
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-6">
-          {vendors.map(vendor => (
-            <div
-              key={vendor.id}
-              className="group p-6 rounded bg-gradient-to-bl from-indigo-950 to-indigo-900"
-            >
-              <p className="text-lg font-semibold">{vendor.vendor.name}</p>
-              <p className="mt-1 text-2xl font-semibold text-red-500 group-first:text-emerald-500">
-                ${vendor.price}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
     </Container>
   )
 }
@@ -115,7 +97,7 @@ async function initData(movieId, setMovie, setVendors) {
     getMovieById(movieId),
     getVendorsByMovieId(movieId),
   ])
-  getPostersByMovieId(movieId)
+  // getPostersByMovieId(movieId)
 
   setMovie(movie)
   setVendors(vendors)
