@@ -1,50 +1,29 @@
-create table releases (
-    id bigint auto_increment primary key,
+create table movie (
+    id int auto_increment primary key,
     title varchar(255) not null,
-    type varchar(50) not null,
-    imdb_id varchar(20),
-    season_number int,
-    poster_url varchar(255),
-    source_release_date date not null,
-    source_id int not null,
-    source_name varchar(255) not null,
-    is_original int not null
+    plot longtext not null,
+    trailer varchar(255) not null,
+    rating int not null
 );
 
-create table title_sources (
-    id bigint auto_increment primary key,
-    source_id bigint not null,
-    title_id bigint not null,
-    name varchar(255) not null,
-    type varchar(50) not null,
-    region varchar(50) not null,
-    web_url longtext not null,
-    format varchar(50),
-    price double,
-    seasons int not null,
-    episodes int not null
+create table vendor (
+    id int auto_increment primary key,
+    name varchar(255) not null
 );
 
-create table title_details (
-    id bigint auto_increment primary key,
-    title varchar(255) not null,
-    original_title varchar(255) not null,
-    plot_overview longtext,
-    type varchar(50) not null,
-    runtime_minutes int,
-    year int not null,
-    end_year int,
-    release_date date,
-    imdb_id varchar(20),
-    user_rating double,
-    critic_score double,
-    poster varchar(255),
-    backdrop varchar(255),
-    original_language varchar(50) not null,
-    relevance_percentile double not null,
-    popularity_percentile double not null,
-    trailer varchar(255),
-    trailer_thumbnail varchar(255),
-    genres json not null,
-    genre_names json not null
+create table movie_vendor (
+    id int auto_increment primary key,
+    movie_id int,
+    vendor_id int,
+    price int not null,
+    foreign key (movie_id) references movie(id),
+    foreign key (vendor_id) references vendor(id)
 );
+
+create table poster (
+    id int auto_increment primary key,
+    url varchar(255) not null,
+    movie_id int,
+    foreign key (movie_id) references movie(id)
+);
+
