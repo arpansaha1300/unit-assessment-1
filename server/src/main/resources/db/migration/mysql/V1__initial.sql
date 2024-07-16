@@ -15,7 +15,7 @@ create table movie_vendor (
     id int auto_increment primary key,
     movie_id int,
     vendor_id int,
-    price int not null,
+    price double not null,
     foreign key (movie_id) references movie(id),
     foreign key (vendor_id) references vendor(id)
 );
