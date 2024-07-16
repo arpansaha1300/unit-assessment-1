@@ -1,21 +1,16 @@
 import { Link } from 'react-router-dom'
-// import Badge from './Badge'
+import Badge from './Badge'
 import Poster from './Poster'
 // import Year from '../Year'
 import classNames from '~/utils/classNames'
 
-// interface Price {
-//   vendorName: string
-//   price: number
-// }
-
 interface CardProps {
   movie: any
-  price: number
+  movieVendor: any
 }
 
 export default function Card(props: Readonly<CardProps>) {
-  const { movie, price } = props
+  const { movie, movieVendor } = props
 
   // const year = parseInt(movie.year)
 
@@ -29,9 +24,9 @@ export default function Card(props: Readonly<CardProps>) {
         <span className="hidden sm:block absolute inset-0 bg-gradient-to-br from-indigo-950/30" />
         <span className="sm:hidden absolute inset-0 top-1/3 bg-gradient-to-t from-stone-950" />
 
-        {/* <div className="absolute top-2 left-2">
-          <Badge badge={price.vendorName} />
-        </div> */}
+        <div className="absolute top-2 left-2">
+          <Badge badge={movieVendor.vendor.name} />
+        </div>
       </div>
 
       <div className="flex-grow p-4 flex flex-col justify-between absolute z-10 bottom-0 sm:static">
@@ -64,7 +59,7 @@ export default function Card(props: Readonly<CardProps>) {
 
           <p className="mt-2.5">
             <span className="inline-block font-semibold text-2xl text-emerald-300">
-              ${price}
+              ${movieVendor.price}
             </span>
             <span className="inline-block mx-2">•</span>
             {movie.rating && (

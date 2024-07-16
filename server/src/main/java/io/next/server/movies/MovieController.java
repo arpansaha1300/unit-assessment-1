@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.next.server.movie_vendors.MovieVendor;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -30,7 +32,7 @@ public class MovieController {
   }
 
   @GetMapping("/{movieId}/price")
-  public Optional<Integer> getPriceByMovieId(@PathVariable("movieId") int movieId) {
+  public Optional<MovieVendor> getPriceByMovieId(@PathVariable("movieId") int movieId) {
     return movieService.getMinPriceByMovieId(movieId);
   }
 

@@ -6,11 +6,11 @@ import Container from '~common/Container'
 
 export function Component() {
   const [movies, setMovies] = useState([])
-  const [prices, setPrices] = useState([])
+  const [movieVendors, setMovieVendors] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    initData(setMovies, setPrices).then(() => setLoading(false))
+    initData(setMovies, setMovieVendors).then(() => setLoading(false))
   }, [])
 
   return (
@@ -25,7 +25,7 @@ export function Component() {
       ) : (
         <div className="mt-16 grid sm:grid-cols-2 gap-6 sm:gap-8">
           {movies.map((movie, i) => (
-            <Card key={movie.id} movie={movie} price={prices[i]} />
+            <Card key={movie.id} movie={movie} movieVendor={movieVendors[i]} />
           ))}
         </div>
       )}
@@ -35,15 +35,15 @@ export function Component() {
 
 Component.displayName = 'Home'
 
-async function initData(setMovies, setPrices) {
+async function initData(setMovies, setMovieVendors) {
   const movies = await getMovies()
-  const prices = []
+  const movieVendors = []
 
   setMovies(movies)
 
   for (const movie of movies) {
-    prices.push(await getPriceByMovieId(movie.id))
+    movieVendors.push(await getPriceByMovieId(movie.id))
   }
 
-  setPrices(prices)
+  setMovieVendors(movieVendors)
 }

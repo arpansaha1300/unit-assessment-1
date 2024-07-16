@@ -11,4 +11,6 @@ public interface MovieVendorRepository extends CrudRepository<MovieVendor, Integ
   int findMinPriceByMovieId(@Param("movieId") int movieId);
 
   List<MovieVendor> findByMovieIdOrderByPrice(@Param("movieId") int movieId);
+
+  MovieVendor findFirstByMovieIdOrderByPrice(@Param("movieId") int movieId);
 }

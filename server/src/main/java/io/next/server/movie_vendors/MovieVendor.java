@@ -16,10 +16,12 @@ import jakarta.persistence.GenerationType;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
+@ToString
 public class MovieVendor {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,5 +37,5 @@ public class MovieVendor {
   private Vendor vendor;
 
   @Column(name = "price", nullable = false)
-  private int price;
+  private double price;
 }

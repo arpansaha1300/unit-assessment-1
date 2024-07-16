@@ -5,12 +5,7 @@ import Loader from '~common/Loader'
 import Poster from '~common/Poster'
 import Container from '~common/Container'
 import YoutubeEmbed from '~/components/YoutubeEmbed'
-import {
-  getMovieById,
-  getPosterByMovieId,
-  getPriceByMovieId,
-  getVendorsByMovieId,
-} from '~/api'
+import { getMovieById, getPostersByMovieId, getVendorsByMovieId } from '~/api'
 // import Year from '~/components/Year'
 
 export function Component() {
@@ -18,14 +13,11 @@ export function Component() {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [movie, setMovie] = useState([])
-  const [price, setPrice] = useState([])
   const [vendors, setVendors] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    initData(params.movieId, setMovie, setPrice, setVendors).then(() =>
-      setLoading(false)
-    )
+    initData(params.movieId, setMovie, setVendors).then(() => setLoading(false))
   }, [params])
 
   if (loading) {
@@ -75,7 +67,7 @@ export function Component() {
 
           <p className="mt-4">
             <span className="inline-block font-semibold text-2xl text-emerald-300">
-              ${price}
+              ${vendors[0].price}
             </span>
             <span className="inline-block mx-2.5">•</span>
             <span className="inline-block font-bold text-indigo-300">
@@ -118,15 +110,13 @@ export function Component() {
 
 Component.displayName = 'Details'
 
-async function initData(movieId, setMovie, setPrice, setVendors) {
-  const [movie, price, vendors] = await Promise.all([
+async function initData(movieId, setMovie, setVendors) {
+  const [movie, vendors] = await Promise.all([
     getMovieById(movieId),
-    getPriceByMovieId(movieId),
     getVendorsByMovieId(movieId),
   ])
-  getPosterByMovieId(movieId)
+  getPostersByMovieId(movieId)
 
   setMovie(movie)
-  setPrice(price)
   setVendors(vendors)
 }

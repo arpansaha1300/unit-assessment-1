@@ -12,7 +12,7 @@ export function getPriceByMovieId(movieId: number) {
   return _fetch(`movies/${movieId}/price`)
 }
 
-export function getPosterByMovieId(movieId: number) {
+export function getPostersByMovieId(movieId: number) {
   return _fetch(`posters/${movieId}`)
 }
 

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import org.springframework.stereotype.Service;
 
+import io.next.server.movie_vendors.MovieVendor;
 import io.next.server.movie_vendors.MovieVendorRepository;
 
 @Service
@@ -29,19 +30,24 @@ public class MovieService {
     return movieRepository.findById(movieId);
   }
 
-  public Optional<Integer> getMinPriceByMovieId(int movieId) {
+  public Optional<MovieVendor> getMinPriceByMovieId(int movieId) {
     final Optional<Movie> optionalMovie = movieRepository.findById(movieId);
 
     if (optionalMovie.isEmpty()) {
       return Optional.empty();
     }
 
+    final MovieVendor movieVendor = movieVendorRepository.findFirstByMovieIdOrderByPrice(movieId);
+
+    System.out.println(movieVendor.toString());
+
     final Movie movie = optionalMovie.get();
-    final int price = movieVendorRepository.findMinPriceByMovieId(movieId);
 
-    final int profitMargin = price * movie.getRating() / 10;
-    final int finalPrice = price + profitMargin;
+    final double profitMargin = movieVendor.getPrice() * movie.getRating() / 10;
+    final double finalPrice = movieVendor.getPrice() + profitMargin;
 
-    return Optional.of(finalPrice);
+    movieVendor.setPrice(finalPrice);
+
+    return Optional.of(movieVendor);
   }
 }
