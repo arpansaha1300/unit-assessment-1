@@ -1,21 +1,16 @@
 import { useEffect, useState } from 'react'
-import { getReleases, getTitleDetails, getTitleSources } from '~/api'
+import { getMovies, getPriceByMovieId } from '~/api'
 import Card from '~common/Card'
 import Loader from '~common/Loader'
 import Container from '~common/Container'
 
 export function Component() {
-  const [releases, setReleases] = useState([])
-  const [titleDetails, setTitleDetails] = useState([])
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, setTitleSources] = useState([])
+  const [movies, setMovies] = useState([])
   const [prices, setPrices] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    initData(setReleases, setTitleDetails, setTitleSources, setPrices).then(
-      () => setLoading(false)
-    )
+    initData(setMovies, setPrices).then(() => setLoading(false))
   }, [])
 
   return (
@@ -29,13 +24,8 @@ export function Component() {
         </div>
       ) : (
         <div className="mt-16 grid sm:grid-cols-2 gap-6 sm:gap-8">
-          {releases.map((release, i) => (
-            <Card
-              key={release.id}
-              release={release}
-              price={prices[i]}
-              titleDetail={titleDetails[i]}
-            />
+          {movies.map((movie, i) => (
+            <Card key={movie.id} movie={movie} price={prices[i]} />
           ))}
         </div>
       )}
@@ -45,38 +35,15 @@ export function Component() {
 
 Component.displayName = 'Home'
 
-async function initData(
-  setReleases,
-  setTitleDetails,
-  setTitleSources,
-  setPrices
-) {
-  const details = []
-  const sources = []
+async function initData(setMovies, setPrices) {
+  const movies = await getMovies()
   const prices = []
-  const releases = await getReleases()
 
-  for (const release of releases) {
-    const [detail, currSources] = await Promise.all([
-      getTitleDetails(release.id),
-      getTitleSources(release.id),
-    ])
+  setMovies(movies)
 
-    let price = null
-
-    for (const source of currSources) {
-      if (source.price === null) continue
-      if (price === null) price = source.price
-      else price = Math.min(source.price, price)
-    }
-
-    details.push(detail)
-    sources.push(currSources)
-    prices.push(price)
+  for (const movie of movies) {
+    prices.push(await getPriceByMovieId(movie.id))
   }
 
-  setReleases(releases)
-  setTitleDetails(details)
-  setTitleSources(sources)
   setPrices(prices)
 }

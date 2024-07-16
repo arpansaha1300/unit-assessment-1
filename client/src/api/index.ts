@@ -1,19 +1,17 @@
 import _fetch from '~/utils/_fetch'
 
-export function getReleases(limit = 5) {
-  if (limit) {
-    return _fetch('releases', {
-      query: new URLSearchParams({ limit: limit.toString() }),
-    })
-  }
-
-  return _fetch('releases')
+export function getMovies() {
+  return _fetch('movies')
 }
 
-export function getTitleDetails(titleId: number) {
-  return _fetch(`title/${titleId}/details`)
+export function getMovieById(movieId: number) {
+  return _fetch(`movies/${movieId}`)
 }
 
-export function getTitleSources(titleId: number) {
-  return _fetch(`title/${titleId}/sources`)
+export function getPriceByMovieId(movieId: number) {
+  return _fetch(`movies/${movieId}/price`)
+}
+
+export function getPosterByMovieId(movieId: number) {
+  return _fetch(`posters/${movieId}`)
 }

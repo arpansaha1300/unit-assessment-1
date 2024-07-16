@@ -1,26 +1,23 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import Badge from '~common/Badge'
+// import Badge from '~common/Badge'
 import Loader from '~common/Loader'
 import Poster from '~common/Poster'
 import Container from '~common/Container'
 import YoutubeEmbed from '~/components/YoutubeEmbed'
-import { getTitleDetails, getTitleSources } from '~/api'
-import Year from '~/components/Year'
+import { getMovieById, getPosterByMovieId, getPriceByMovieId } from '~/api'
+// import Year from '~/components/Year'
 
 export function Component() {
   const params = useParams()
 
-  const [titleDetail, setTitleDetails] = useState(null)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, setTitleSources] = useState([])
+  const [movie, setMovie] = useState([])
   const [price, setPrice] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    initData(params.releaseId, setTitleDetails, setTitleSources, setPrice).then(
-      () => setLoading(false)
-    )
+    initData(params.movieId, setMovie, setPrice).then(() => setLoading(false))
   }, [params])
 
   if (loading) {
@@ -41,46 +38,44 @@ export function Component() {
       </Link>
 
       <section className="mt-4 sm:grid grid-cols-4 gap-8">
-        <div className="relative rounded overflow-hidden">
+        {/* <div className="relative rounded overflow-hidden">
           <div className="sm:w-[185px] sm:h-[278px]">
-            <Poster poster_url={titleDetail.poster} title={titleDetail.title} />
+            <Poster poster_url={movie.posters[0].url} title={movie.title} />
           </div>
-        </div>
+        </div> */}
 
         <div className="mt-6 sm:mt-0 col-span-3">
-          <Year
-            year={titleDetail.year}
-            endYear={titleDetail.end_date}
-            fontSize="text-sm"
-          />
-
-          <h1 className="mt-1 text-5xl font-bold">{titleDetail.title}</h1>
-
-          <div className="mt-4 flex gap-2.5 flex-wrap">
-            {titleDetail.genre_names.slice(0, 3).map(genre => (
-              <Badge key={genre} badge={genre} />
+          <div className="mb-6 grid sm:grid-cols-4 gap-4">
+            {movie.posters.map(poster => (
+              <div key={poster.id} className="relative rounded overflow-hidden">
+                <div className="sm:w-[185px] sm:h-[278px]">
+                  <Poster poster_url={poster.url} title={movie.title} />
+                </div>
+              </div>
             ))}
           </div>
 
-          {titleDetail.user_rating && (
-            <p className="mt-4">
-              {price && (
-                <>
-                  <span className="inline-block font-semibold text-2xl text-emerald-300">
-                    ${price}
-                  </span>
-                  <span className="inline-block mx-2.5">•</span>
-                </>
-              )}
-              <span className="inline-block font-bold text-indigo-300">
-                {titleDetail.user_rating} / 10
-              </span>
-            </p>
-          )}
+          {/* <Year year={movie.year} endYear={movie.end_date} fontSize="text-sm" /> */}
 
-          <p className="max-w-lg mt-4 text-gray-300">
-            {titleDetail.plot_overview}
+          <h1 className="mt-1 text-5xl font-bold">{movie.title}</h1>
+
+          {/* <div className="mt-4 flex gap-2.5 flex-wrap">
+            {movie.genre_names.slice(0, 3).map(genre => (
+              <Badge key={genre} badge={genre} />
+            ))}
+          </div> */}
+
+          <p className="mt-4">
+            <span className="inline-block font-semibold text-2xl text-emerald-300">
+              ${price}
+            </span>
+            <span className="inline-block mx-2.5">•</span>
+            <span className="inline-block font-bold text-indigo-300">
+              {movie.rating} / 5
+            </span>
           </p>
+
+          <p className="max-w-lg mt-4 text-gray-300">{movie.plot}</p>
         </div>
       </section>
 
@@ -88,7 +83,7 @@ export function Component() {
         <h2 className="mb-8 text-4xl font-bold">Trailer</h2>
 
         <div className="mx-auto w-max">
-          <YoutubeEmbed src={titleDetail.trailer} title={titleDetail.title} />
+          <YoutubeEmbed src={movie.trailer} title={movie.title} />
         </div>
       </section>
     </Container>
@@ -97,21 +92,13 @@ export function Component() {
 
 Component.displayName = 'Details'
 
-async function initData(releaseId, setTitleDetails, setTitleSources, setPrice) {
-  const [detail, currSources] = await Promise.all([
-    getTitleDetails(releaseId),
-    getTitleSources(releaseId),
+async function initData(movieId, setMovie, setPrice) {
+  const [movie, price] = await Promise.all([
+    getMovieById(movieId),
+    getPriceByMovieId(movieId),
   ])
+  getPosterByMovieId(movieId)
 
-  let price = null
-
-  for (const source of currSources) {
-    if (source.price === null) continue
-    if (price === null) price = source.price
-    else price = Math.min(source.price, price)
-  }
-
-  setTitleDetails(detail)
-  setTitleSources(currSources)
+  setMovie(movie)
   setPrice(price)
 }
