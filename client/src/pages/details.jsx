@@ -5,7 +5,12 @@ import Loader from '~common/Loader'
 import Poster from '~common/Poster'
 import Container from '~common/Container'
 import YoutubeEmbed from '~/components/YoutubeEmbed'
-import { getMovieById, getPosterByMovieId, getPriceByMovieId } from '~/api'
+import {
+  getMovieById,
+  getPosterByMovieId,
+  getPriceByMovieId,
+  getVendorsByMovieId,
+} from '~/api'
 // import Year from '~/components/Year'
 
 export function Component() {
@@ -14,10 +19,13 @@ export function Component() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [movie, setMovie] = useState([])
   const [price, setPrice] = useState([])
+  const [vendors, setVendors] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    initData(params.movieId, setMovie, setPrice).then(() => setLoading(false))
+    initData(params.movieId, setMovie, setPrice, setVendors).then(() =>
+      setLoading(false)
+    )
   }, [params])
 
   if (loading) {
@@ -86,19 +94,39 @@ export function Component() {
           <YoutubeEmbed src={movie.trailer} title={movie.title} />
         </div>
       </section>
+
+      <section className="mt-12">
+        <h2 className="mb-8 text-4xl font-bold">Vendors</h2>
+
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-6">
+          {vendors.map(vendor => (
+            <div
+              key={vendor.id}
+              className="group p-6 rounded bg-gradient-to-bl from-indigo-950 to-indigo-900"
+            >
+              <p className="text-lg font-semibold">{vendor.vendor.name}</p>
+              <p className="mt-1 text-2xl font-semibold text-red-500 group-first:text-emerald-500">
+                ${vendor.price}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
     </Container>
   )
 }
 
 Component.displayName = 'Details'
 
-async function initData(movieId, setMovie, setPrice) {
-  const [movie, price] = await Promise.all([
+async function initData(movieId, setMovie, setPrice, setVendors) {
+  const [movie, price, vendors] = await Promise.all([
     getMovieById(movieId),
     getPriceByMovieId(movieId),
+    getVendorsByMovieId(movieId),
   ])
   getPosterByMovieId(movieId)
 
   setMovie(movie)
   setPrice(price)
+  setVendors(vendors)
 }

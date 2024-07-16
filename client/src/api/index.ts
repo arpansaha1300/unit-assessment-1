@@ -15,3 +15,7 @@ export function getPriceByMovieId(movieId: number) {
 export function getPosterByMovieId(movieId: number) {
   return _fetch(`posters/${movieId}`)
 }
+
+export function getVendorsByMovieId(movieId: number) {
+  return _fetch(`vendors/${movieId}`)
+}

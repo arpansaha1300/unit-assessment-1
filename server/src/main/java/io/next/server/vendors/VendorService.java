@@ -1,22 +1,24 @@
 package io.next.server.vendors;
 
 import java.util.List;
-import java.util.ArrayList;
 
 import org.springframework.stereotype.Service;
+
+import io.next.server.movie_vendors.MovieVendor;
+import io.next.server.movie_vendors.MovieVendorRepository;
 
 @Service
 public class VendorService {
 
   VendorRepository vendorRepository;
+  MovieVendorRepository movieVendorRepository;
 
-  public VendorService(VendorRepository vendorRepository) {
+  public VendorService(VendorRepository vendorRepository, MovieVendorRepository movieVendorRepository) {
     this.vendorRepository = vendorRepository;
+    this.movieVendorRepository = movieVendorRepository;
   }
 
-  public List<Vendor> getAll() {
-    ArrayList<Vendor> vendors = new ArrayList<>();
-    vendorRepository.findAll().forEach(vendors::add);
-    return vendors;
+  public List<MovieVendor> getVendorsByMovieId(int movieId) {
+    return movieVendorRepository.findByMovieIdOrderByPrice(movieId);
   }
 }
