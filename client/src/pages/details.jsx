@@ -6,7 +6,13 @@ import Poster from '~common/Poster'
 import Container from '~common/Container'
 import YoutubeEmbed from '~/components/YoutubeEmbed'
 import { getMovieById, getVendorsByMovieId } from '~/api'
+import { Transition } from '@headlessui/react'
+import classNames from '~/utils/classNames'
 // import Year from '~/components/Year'
+
+// interface PosterCarousalProps {
+//   posters: any[]
+// }
 
 export function Component() {
   const params = useParams()
@@ -29,31 +35,17 @@ export function Component() {
   }
 
   return (
-    <Container as="main">
-      <Link
-        to="/"
-        className="sm:text-sm text-indigo-400 hover:text-indigo-300 font-semibold transition-colors"
-      >
-        &larr; Back
-      </Link>
+    <main>
+      <div>
+        <PosterCarousal posters={movie.posters} />
 
-      <section className="mt-4 sm:grid grid-cols-4 gap-8">
-        {/* <div className="relative rounded overflow-hidden">
-          <div className="sm:w-[185px] sm:h-[278px]">
-            <Poster poster_url={movie.posters[0].url} title={movie.title} />
-          </div>
-        </div> */}
-
-        <div className="mt-6 sm:mt-0 col-span-3">
-          <div className="mb-6 grid sm:grid-cols-4 gap-4">
-            {movie.posters.map(poster => (
-              <div key={poster.id} className="relative rounded overflow-hidden">
-                <div className="sm:w-[185px] sm:h-[278px]">
-                  <Poster poster_url={poster.url} title={movie.title} />
-                </div>
-              </div>
-            ))}
-          </div>
+        <Container as="section" className="mt-52 relative z-30 py-16">
+          <Link
+            to="/"
+            className="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors"
+          >
+            &larr; Back
+          </Link>
 
           {/* <Year year={movie.year} endYear={movie.end_date} fontSize="text-sm" /> */}
 
@@ -75,29 +67,84 @@ export function Component() {
             </span>
           </p>
 
-          <p className="max-w-lg mt-4 text-gray-300">{movie.plot}</p>
-        </div>
-      </section>
+          <p className="max-w-2xl mt-4 text-sm text-gray-300">{movie.plot}</p>
+        </Container>
+      </div>
 
-      <section className="mt-12">
+      <Container as="section" className="py-12 h-screen">
         <h2 className="mb-8 text-4xl font-bold">Trailer</h2>
 
         <div className="mx-auto w-max">
           <YoutubeEmbed src={movie.trailer} title={movie.title} />
         </div>
-      </section>
-    </Container>
+      </Container>
+    </main>
   )
 }
 
 Component.displayName = 'Details'
+
+function PosterCarousal({ posters }) {
+  const [nextPosterIdx, setNextPosterIdx] = useState(1 % posters.length)
+  const [currPosterIdx, setCurrPosterIdx] = useState(0)
+  const [show, setShow] = useState(true)
+
+  useEffect(() => {
+    let currTimer = null
+    let nextTimer = null
+    const interval = setInterval(() => {
+      setShow(false)
+
+      currTimer = setTimeout(() => {
+        setShow(true)
+        setCurrPosterIdx(x => (x + 1) % posters.length)
+      }, 500)
+
+      nextTimer = setTimeout(() => {
+        setNextPosterIdx(x => (x + 1) % posters.length)
+      }, 700)
+    }, 3000)
+
+    return () => {
+      clearInterval(interval)
+      if (currTimer) clearTimeout(currTimer)
+      if (nextTimer) clearTimeout(nextTimer)
+    }
+  }, [posters.length])
+
+  return (
+    <div className="absolute top-0 w-screen h-screen">
+      <Poster
+        poster_url={posters[nextPosterIdx].horizontal}
+        title={posters[nextPosterIdx].title}
+      />
+
+      <Transition
+        show={show}
+        unmount={false}
+        as="div"
+        className={classNames(
+          'absolute inset-0 z-10 data-[closed]:opacity-0',
+          'data-[leave]:transition data-[leave]:ease-in-out data-[leave]:duration-300',
+          'data-[leave]:data-[closed]:opacity-0'
+        )}
+      >
+        <Poster
+          poster_url={posters[currPosterIdx].horizontal}
+          title={posters[currPosterIdx].title}
+        />
+      </Transition>
+
+      <span className="absolute inset-0 z-20 bg-gradient-to-tr from-stone-950" />
+    </div>
+  )
+}
 
 async function initData(movieId, setMovie, setVendors) {
   const [movie, vendors] = await Promise.all([
     getMovieById(movieId),
     getVendorsByMovieId(movieId),
   ])
-  // getPostersByMovieId(movieId)
 
   setMovie(movie)
   setVendors(vendors)
