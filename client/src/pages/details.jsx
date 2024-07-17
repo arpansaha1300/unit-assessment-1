@@ -5,25 +5,23 @@ import Loader from '~common/Loader'
 import Poster from '~common/Poster'
 import Container from '~common/Container'
 import YoutubeEmbed from '~/components/YoutubeEmbed'
-import { getMovieById, getVendorsByMovieId } from '~/api'
+import { getMovieById } from '~/api'
 import { Transition } from '@headlessui/react'
 import classNames from '~/utils/classNames'
 // import Year from '~/components/Year'
-
-// interface PosterCarousalProps {
-//   posters: any[]
-// }
 
 export function Component() {
   const params = useParams()
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [movie, setMovie] = useState([])
-  const [vendors, setVendors] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    initData(params.movieId, setMovie, setVendors).then(() => setLoading(false))
+    getMovieById(params.movieId).then(res => {
+      setMovie(res)
+      setLoading(false)
+    })
   }, [params])
 
   if (loading) {
@@ -59,7 +57,7 @@ export function Component() {
 
           <p className="mt-4">
             <span className="inline-block font-semibold text-2xl text-emerald-300">
-              ${vendors[0].price}
+              ${movie.price}
             </span>
             <span className="inline-block mx-2.5">•</span>
             <span className="inline-block font-bold text-indigo-300">
@@ -138,14 +136,4 @@ function PosterCarousal({ posters }) {
       <span className="absolute inset-0 z-20 bg-gradient-to-tr from-stone-950" />
     </div>
   )
-}
-
-async function initData(movieId, setMovie, setVendors) {
-  const [movie, vendors] = await Promise.all([
-    getMovieById(movieId),
-    getVendorsByMovieId(movieId),
-  ])
-
-  setMovie(movie)
-  setVendors(vendors)
 }

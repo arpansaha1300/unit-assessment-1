@@ -3,13 +3,13 @@ package io.next.server.movies;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import io.next.server.movie_vendors.MovieVendor;
+import io.next.server.movies.MovieService.MovieWithPrice;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/movies")
@@ -22,18 +22,17 @@ public class MovieController {
   }
 
   @GetMapping()
-  public List<Movie> getAll() {
+  public List<MovieWithPrice> getAll(@RequestParam(required = false) String search) {
+    if (search != null) {
+      return movieService.getAllByQuery(search);
+    }
+
     return movieService.getAll();
   }
 
   @GetMapping("/{movieId}")
-  public Optional<Movie> getMovieById(@PathVariable("movieId") int movieId) {
+  public Optional<MovieWithPrice> getMovieById(@PathVariable("movieId") int movieId) {
     return movieService.getMovieById(movieId);
-  }
-
-  @GetMapping("/{movieId}/price")
-  public Optional<MovieVendor> getPriceByMovieId(@PathVariable("movieId") int movieId) {
-    return movieService.getMinPriceByMovieId(movieId);
   }
 
 }

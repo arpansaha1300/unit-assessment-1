@@ -5,11 +5,10 @@ import classNames from '~/utils/classNames'
 
 interface CardProps {
   movie: any
-  movieVendor: any
 }
 
 export default function Card(props: Readonly<CardProps>) {
-  const { movie, movieVendor } = props
+  const { movie } = props
 
   // const year = parseInt(movie.year)
 
@@ -58,7 +57,7 @@ export default function Card(props: Readonly<CardProps>) {
 
           <p className="mt-2.5">
             <span className="inline-block font-semibold text-2xl text-emerald-300">
-              ${movieVendor.price}
+              ${movie.price}
             </span>
             <span className="inline-block mx-2">•</span>
             {movie.rating && (

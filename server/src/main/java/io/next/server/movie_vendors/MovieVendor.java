@@ -34,6 +34,7 @@ public class MovieVendor {
 
   @ManyToOne
   @JoinColumn(name = "vendor_id", nullable = false)
+  @JsonBackReference
   private Vendor vendor;
 
   @Column(name = "price", nullable = false)

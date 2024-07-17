@@ -1,21 +1,17 @@
 import _fetch from '~/utils/_fetch'
 
-export function getMovies() {
+export async function getMovies() {
   return _fetch('movies')
 }
 
-export function getMovieById(movieId: number) {
+export async function getMovieById(movieId: number) {
   return _fetch(`movies/${movieId}`)
 }
 
-export function getPriceByMovieId(movieId: number) {
-  return _fetch(`movies/${movieId}/price`)
-}
-
-export function getPostersByMovieId(movieId: number) {
+export async function getPostersByMovieId(movieId: number) {
   return _fetch(`posters/${movieId}`)
 }
 
-export function getVendorsByMovieId(movieId: number) {
-  return _fetch(`vendors/${movieId}`)
+export async function doSearch(search: string) {
+  return _fetch(`movies?search=${search}`)
 }

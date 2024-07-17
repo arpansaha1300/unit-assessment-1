@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import io.next.server.movie_vendors.MovieVendor;
 import io.next.server.movie_vendors.MovieVendorRepository;
+import lombok.Getter;
+import lombok.Setter;
 
 @Service
 public class MovieService {
@@ -15,39 +17,64 @@ public class MovieService {
   MovieRepository movieRepository;
   MovieVendorRepository movieVendorRepository;
 
+  @Getter
+  @Setter
+  public class MovieWithPrice extends Movie {
+    private double price;
+
+    public MovieWithPrice(Movie movie, double price) {
+      super(movie.getId(), movie.getTitle(), movie.getPlot(), movie.getTrailer(), movie.getRating(),
+          movie.getPosters());
+      this.price = price;
+    }
+  }
+
   public MovieService(MovieRepository movieRepository, MovieVendorRepository movieVendorRepository) {
     this.movieRepository = movieRepository;
     this.movieVendorRepository = movieVendorRepository;
   }
 
-  public List<Movie> getAll() {
-    ArrayList<Movie> movies = new ArrayList<>();
-    movieRepository.findAll().forEach(movies::add);
-    return movies;
+  public List<MovieWithPrice> getAll() {
+    ArrayList<MovieWithPrice> moviesWithPrice = new ArrayList<>();
+
+    movieRepository.findAll().forEach(movie -> {
+      final double price = getMinPriceByMovie(movie);
+      moviesWithPrice.add(new MovieWithPrice(movie, price));
+    });
+
+    return moviesWithPrice;
   }
 
-  public Optional<Movie> getMovieById(int movieId) {
-    return movieRepository.findById(movieId);
+  public List<MovieWithPrice> getAllByQuery(String search) {
+    ArrayList<MovieWithPrice> moviesWithPrice = new ArrayList<>();
+
+    movieRepository.findByTitleContaining(search).forEach(movie -> {
+      final double price = getMinPriceByMovie(movie);
+      moviesWithPrice.add(new MovieWithPrice(movie, price));
+    });
+
+    return moviesWithPrice;
   }
 
-  public Optional<MovieVendor> getMinPriceByMovieId(int movieId) {
-    final Optional<Movie> optionalMovie = movieRepository.findById(movieId);
+  public Optional<MovieWithPrice> getMovieById(int movieId) {
+    Optional<Movie> optionalMovie = movieRepository.findById(movieId);
 
     if (optionalMovie.isEmpty()) {
       return Optional.empty();
     }
 
-    final MovieVendor movieVendor = movieVendorRepository.findFirstByMovieIdOrderByPrice(movieId);
+    Movie movie = optionalMovie.get();
+    final double price = getMinPriceByMovie(movie);
 
-    System.out.println(movieVendor.toString());
+    MovieWithPrice movieWithPrice = new MovieWithPrice(movie, price);
 
-    final Movie movie = optionalMovie.get();
+    return Optional.of(movieWithPrice);
+  }
+
+  private Double getMinPriceByMovie(Movie movie) {
+    final MovieVendor movieVendor = movieVendorRepository.findFirstByMovieIdOrderByPrice(movie.getId());
 
     final double profitMargin = movieVendor.getPrice() * movie.getRating() / 10;
-    final double finalPrice = movieVendor.getPrice() + profitMargin;
-
-    movieVendor.setPrice(finalPrice);
-
-    return Optional.of(movieVendor);
+    return movieVendor.getPrice() + profitMargin;
   }
 }

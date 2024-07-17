@@ -1,16 +1,21 @@
 import { useEffect, useState } from 'react'
-import { getMovies, getPriceByMovieId } from '~/api'
+import { doSearch, getMovies } from '~/api'
 import Card from '~common/Card'
 import Loader from '~common/Loader'
 import Container from '~common/Container'
+import BaseInput from '~/components/base/BaseInput'
+import { useDebounce } from '~/hooks/useDebounce'
 
 export function Component() {
   const [movies, setMovies] = useState([])
-  const [movieVendors, setMovieVendors] = useState([])
+  const [searchResults, setSearchResults] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    initData(setMovies, setMovieVendors).then(() => setLoading(false))
+    getMovies().then(res => {
+      setMovies(res)
+      setLoading(false)
+    })
   }, [])
 
   return (
@@ -23,11 +28,20 @@ export function Component() {
           <Loader className="mx-auto w-6" />
         </div>
       ) : (
-        <div className="mt-16 grid sm:grid-cols-2 gap-6 sm:gap-8">
-          {movies.map((movie, i) => (
-            <Card key={movie.id} movie={movie} movieVendor={movieVendors[i]} />
-          ))}
-        </div>
+        <>
+          <div className="mt-8">
+            <Search
+              type="search"
+              label="Search movies"
+              className="max-w-md"
+              setSearchResults={setSearchResults}
+            />
+          </div>
+
+          <div className="mt-16 grid sm:grid-cols-2 gap-6 sm:gap-8">
+            <Movies movies={movies} searchResults={searchResults} />
+          </div>
+        </>
       )}
     </Container>
   )
@@ -35,15 +49,46 @@ export function Component() {
 
 Component.displayName = 'Home'
 
-async function initData(setMovies, setMovieVendors) {
-  const movies = await getMovies()
-  const movieVendors = []
+function Search({ setSearchResults }) {
+  const [value, setValue] = useState('')
+  // const isFirstRun = useRef(true)
 
-  setMovies(movies)
-
-  for (const movie of movies) {
-    movieVendors.push(await getPriceByMovieId(movie.id))
+  function handleChange(e) {
+    setValue(e.target.value)
   }
 
-  setMovieVendors(movieVendors)
+  useDebounce(
+    async () => {
+      // if (isFirstRun.current) {
+      //   isFirstRun.current = false
+      //   return
+      // }
+      if (value === '') {
+        setSearchResults(null)
+        return
+      }
+      const results = await doSearch(value)
+      setSearchResults(results)
+    },
+    1000,
+    [value]
+  )
+
+  return (
+    <BaseInput
+      type="search"
+      label="Search movies"
+      className="max-w-md"
+      value={value}
+      onChange={handleChange}
+    />
+  )
+}
+
+function Movies({ movies, searchResults }) {
+  if (searchResults) {
+    return searchResults.map(movie => <Card key={movie.id} movie={movie} />)
+  }
+
+  return movies.map(movie => <Card key={movie.id} movie={movie} />)
 }
