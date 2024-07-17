@@ -24,8 +24,11 @@ public class Poster {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
 
-  @Column(name = "url", nullable = false)
-  private String url;
+  @Column(name = "horizontal", nullable = false)
+  private String horizontal;
+
+  @Column(name = "vertical", nullable = false)
+  private String vertical;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "movie_id", nullable = false)

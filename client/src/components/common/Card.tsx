@@ -17,7 +17,7 @@ export default function Card(props: Readonly<CardProps>) {
     <div className="rounded-xl overflow-hidden shadow-lg sm:flex ring ring-gray-900 ring-opacity-10 bg-gradient-to-tr even:bg-gradient-to-bl from-indigo-950 to-indigo-900 relative">
       <div className="relative">
         <div className="sm:w-[185px] sm:h-[278px]">
-          <Poster poster_url={movie.posters[0]?.url} title={movie.title} />
+          <Poster poster_url={movie.posters[0]?.vertical} title={movie.title} />
         </div>
 
         <span className="hidden sm:block absolute inset-0 bg-gradient-to-br from-indigo-950/30" />
