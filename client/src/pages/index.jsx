@@ -14,7 +14,7 @@ export function Component() {
   }, [])
 
   return (
-    <Container as="main">
+    <Container as="main" className="py-16">
       <p className="text-xl font-semibold text-indigo-400">Movies & TV Shows</p>
       <h1 className="mt-2 text-5xl font-bold"> Recently Released </h1>
 
