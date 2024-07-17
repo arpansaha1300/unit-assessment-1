@@ -34,10 +34,10 @@ export function Component() {
 
   return (
     <main>
-      <div>
+      <div className="h-screen">
         <PosterCarousal posters={movie.posters} />
 
-        <Container as="section" className="mt-52 relative z-30 py-16">
+        <Container as="section" className="pt-72 relative z-30">
           <Link
             to="/"
             className="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors"
@@ -69,7 +69,7 @@ export function Component() {
         </Container>
       </div>
 
-      <Container as="section" className="py-12 h-screen">
+      <Container as="section" className="py-16 h-screen">
         <h2 className="mb-8 text-4xl font-bold">Trailer</h2>
 
         <div className="mx-auto w-max">
@@ -90,6 +90,7 @@ function PosterCarousal({ posters }) {
   useEffect(() => {
     let currTimer = null
     let nextTimer = null
+
     const interval = setInterval(() => {
       setShow(false)
 
@@ -111,7 +112,7 @@ function PosterCarousal({ posters }) {
   }, [posters.length])
 
   return (
-    <div className="absolute top-0 w-screen h-screen">
+    <div className="absolute top-0 w-full h-screen">
       <Poster
         poster_url={posters[nextPosterIdx].horizontal}
         title={posters[nextPosterIdx].title}
