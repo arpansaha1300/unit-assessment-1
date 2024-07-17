@@ -5,10 +5,13 @@ import Loader from '~common/Loader'
 import Container from '~common/Container'
 import BaseInput from '~/components/base/BaseInput'
 import { useDebounce } from '~/hooks/useDebounce'
+import Poster from '~/components/common/Poster'
+import classNames from '~/utils/classNames'
+import { Transition } from '@headlessui/react'
+import { Link } from 'react-router-dom'
 
 export function Component() {
   const [movies, setMovies] = useState([])
-  const [searchResults, setSearchResults] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -30,16 +33,13 @@ export function Component() {
       ) : (
         <>
           <div className="mt-8">
-            <Search
-              type="search"
-              label="Search movies"
-              className="max-w-md"
-              setSearchResults={setSearchResults}
-            />
+            <Search type="search" label="Search movies" className="max-w-md" />
           </div>
 
           <div className="mt-16 grid sm:grid-cols-2 gap-6 sm:gap-8">
-            <Movies movies={movies} searchResults={searchResults} />
+            {movies.map(movie => (
+              <Card key={movie.id} movie={movie} />
+            ))}
           </div>
         </>
       )}
@@ -49,22 +49,26 @@ export function Component() {
 
 Component.displayName = 'Home'
 
-function Search({ setSearchResults }) {
+function Search() {
   const [value, setValue] = useState('')
-  // const isFirstRun = useRef(true)
+  const [isFocused, setIsFocused] = useState(false)
+  const [searchResults, setSearchResults] = useState(null)
 
   function handleChange(e) {
     setValue(e.target.value)
   }
 
+  function handleFocus() {
+    setIsFocused(true)
+  }
+
+  function handleBlur() {
+    setIsFocused(false)
+  }
+
   useDebounce(
     async () => {
-      // if (isFirstRun.current) {
-      //   isFirstRun.current = false
-      //   return
-      // }
       if (value === '') {
-        setSearchResults(null)
         return
       }
       const results = await doSearch(value)
@@ -74,21 +78,56 @@ function Search({ setSearchResults }) {
     [value]
   )
 
+  useEffect(() => {
+    if (value === '') {
+      setSearchResults(null)
+    }
+  }, [value])
+
   return (
-    <BaseInput
-      type="search"
-      label="Search movies"
-      className="max-w-md"
-      value={value}
-      onChange={handleChange}
-    />
+    <div className="relative max-w-md">
+      <BaseInput
+        id="search"
+        type="search"
+        label="Search movies"
+        className="max-w-md"
+        autoComplete="off"
+        value={value}
+        onChange={handleChange}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+      />
+
+      {searchResults && (
+        <Transition
+          as="div"
+          show={isFocused}
+          className={classNames(
+            'absolute p-1.5 inset-x-0 z-40 top-[calc(100%+0.5rem)] max-h-60 overflow-auto scrollbar',
+            'shadow ring-sm ring-opacity-10 bg-gradient-to-tr from-indigo-950 to-indigo-900/80 divide-y divide-indigo-800 backdrop-blur-sm rounded-md',
+            'data-[transition]:transition-opacity data-[closed]:opacity-0 data-[enter]:bg-red-500 data-[leave]:data-[closed]:opacity-0'
+          )}
+        >
+          {searchResults.map(result => (
+            <Link key={result.id} to={`/${result.id}`}>
+              <div className="flex items-center gap-4 p-2 hover:bg-indigo-800/70 rounded transition-colors">
+                <div className="w-10 h-10 rounded-sm overflow-hidden">
+                  <Poster
+                    poster_url={result.posters[0].vertical}
+                    title={result.title}
+                  />
+                </div>
+                <div>
+                  <p className="font-semibold">{result.title}</p>
+                  <p className="font-medium text-gray-400 text-xs">
+                    {result.rating} / 5
+                  </p>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </Transition>
+      )}
+    </div>
   )
-}
-
-function Movies({ movies, searchResults }) {
-  if (searchResults) {
-    return searchResults.map(movie => <Card key={movie.id} movie={movie} />)
-  }
-
-  return movies.map(movie => <Card key={movie.id} movie={movie} />)
 }

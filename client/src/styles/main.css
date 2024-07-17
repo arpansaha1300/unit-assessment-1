@@ -21,3 +21,24 @@ body {
   @apply bg-gradient-to-tr from-stone-950 via-indigo-950 via-70% to-stone-950;
   @apply text-gray-50;
 }
+
+.scrollbar::-webkit-scrollbar,
+.scrollbar::-webkit-scrollbar-track,
+.scrollbar::-webkit-scrollbar-track-piece {
+  @apply block my-0.5 w-1.5;
+}
+.scrollbar::-webkit-scrollbar-button {
+  @apply hidden;
+}
+.scrollbar::-webkit-scrollbar-thumb {
+  @apply block bg-indigo-700/70;
+}
+
+.scrollbar.horizontal::-webkit-scrollbar,
+.scrollbar.horizontal::-webkit-scrollbar-track,
+.scrollbar.horizontal::-webkit-scrollbar-track-piece,
+.h-scroll::-webkit-scrollbar,
+.h-scroll::-webkit-scrollbar-track,
+.h-scroll::-webkit-scrollbar-track-piece {
+  @apply block h-1 w-auto;
+}
