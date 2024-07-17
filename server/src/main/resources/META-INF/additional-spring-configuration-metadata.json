@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "springfox.documentation.enabled",
+      "type": "java.lang.String",
+      "description": "Activates the generation of Swagger API documentation for a Spring Boot application."
+    }
+  ]
+}
