@@ -108,24 +108,30 @@ function Search() {
             'data-[transition]:transition-opacity data-[closed]:opacity-0 data-[enter]:bg-red-500 data-[leave]:data-[closed]:opacity-0'
           )}
         >
-          {searchResults.map(result => (
-            <Link key={result.id} to={`/${result.id}`}>
-              <div className="flex items-center gap-4 p-2 hover:bg-indigo-800/70 rounded transition-colors">
-                <div className="w-10 h-10 rounded-sm overflow-hidden">
-                  <Poster
-                    poster_url={result.posters[0].vertical}
-                    title={result.title}
-                  />
+          {searchResults.length === 0 ? (
+            <div className="p-2 text-center font-semibold text-sm">
+              No results found
+            </div>
+          ) : (
+            searchResults.map(result => (
+              <Link key={result.id} to={`/${result.id}`}>
+                <div className="flex items-center gap-4 p-2 hover:bg-indigo-800/70 rounded transition-colors">
+                  <div className="w-10 h-10 rounded-sm overflow-hidden">
+                    <Poster
+                      poster_url={result.posters[0].vertical}
+                      title={result.title}
+                    />
+                  </div>
+                  <div>
+                    <p className="font-semibold">{result.title}</p>
+                    <p className="font-medium text-gray-400 text-xs">
+                      {result.rating} / 5
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-semibold">{result.title}</p>
-                  <p className="font-medium text-gray-400 text-xs">
-                    {result.rating} / 5
-                  </p>
-                </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            ))
+          )}
         </Transition>
       )}
     </div>
