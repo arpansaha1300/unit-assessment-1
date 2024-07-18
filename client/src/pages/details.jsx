@@ -34,10 +34,13 @@ export function Component() {
 
   return (
     <main>
-      <div className="h-screen">
+      <div className="lg:h-screen">
         <PosterCarousal posters={movie.posters} />
 
-        <Container as="section" className="pt-72 relative z-30">
+        <Container
+          as="section"
+          className="mt-10 sm:mt-16 lg:mt-0 lg:pt-64 relative z-30"
+        >
           <Link
             to="/"
             className="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors"
@@ -69,7 +72,7 @@ export function Component() {
         </Container>
       </div>
 
-      <Container as="section" className="py-16 h-screen">
+      <Container as="section" className="py-10 sm:py-16 lg:h-screen">
         <h2 className="mb-8 text-4xl font-bold">Trailer</h2>
 
         <div className="mx-auto w-max">
@@ -112,7 +115,7 @@ function PosterCarousal({ posters }) {
   }, [posters.length])
 
   return (
-    <div className="absolute top-0 w-full h-screen">
+    <div className="relative lg:absolute top-0 w-full aspect-video lg:aspect-auto lg:h-screen">
       <Poster
         poster_url={posters[nextPosterIdx].horizontal}
         title={posters[nextPosterIdx].title}
@@ -134,7 +137,22 @@ function PosterCarousal({ posters }) {
         />
       </Transition>
 
-      <span className="absolute inset-0 z-20 bg-gradient-to-tr from-stone-950" />
+      <span className="absolute inset-0 z-20 bg-gradient-to-t from-stone-950/60 via-transparent lg:bg-gradient-to-tr lg:from-stone-950" />
+
+      <div className="absolute bottom-2 lg:bottom-4 left-1/2 -translate-x-1/2 z-30 space-x-2.5">
+        {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          posters.map((poster, i) => (
+            <span
+              key={poster.id}
+              className={classNames(
+                'inline-block w-2 h-2 rounded-full',
+                currPosterIdx === i ? 'bg-gray-50' : 'border border-gray-50'
+              )}
+            />
+          ))
+        }
+      </div>
     </div>
   )
 }

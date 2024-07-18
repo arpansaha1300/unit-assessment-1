@@ -23,13 +23,12 @@ export default function YoutubeEmbed({ src, title }: YoutubeEmbedProps) {
   }
   return (
     <iframe
-      width="560"
-      height="315"
       src={_src}
       title={title}
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
       referrerPolicy="strict-origin-when-cross-origin"
       allowFullScreen
+      className="w-80 sm:w-[35rem] aspect-video"
     ></iframe>
   )
 }
