@@ -91,6 +91,10 @@ function PosterCarousal({ posters }) {
   const [show, setShow] = useState(true)
 
   useEffect(() => {
+    scrollTo({ top: 0 })
+  }, [])
+
+  useEffect(() => {
     let currTimer = null
     let nextTimer = null
 
