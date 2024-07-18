@@ -75,6 +75,7 @@ public class MovieService {
     final MovieVendor movieVendor = movieVendorRepository.findFirstByMovieIdOrderByPrice(movie.getId());
 
     final double profitMargin = movieVendor.getPrice() * movie.getRating() / 10;
-    return movieVendor.getPrice() + profitMargin;
+    final double finalPrice = movieVendor.getPrice() + profitMargin;
+    return Math.floor(finalPrice * 100) / 100;
   }
 }
