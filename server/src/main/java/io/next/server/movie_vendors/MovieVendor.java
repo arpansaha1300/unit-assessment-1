@@ -6,6 +6,7 @@ import io.next.server.movies.Movie;
 import io.next.server.vendors.Vendor;
 
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -16,12 +17,11 @@ import jakarta.persistence.GenerationType;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
-@ToString
+@Table(name = "movie_vendors")
 public class MovieVendor {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
