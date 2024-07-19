@@ -1,0 +1,181 @@
+openapi: 3.0.0
+info:
+  title: Movie API
+  description: API documentation for Movie App
+  version: 1.0.0
+
+tags:
+  - name: movies
+    description: Operations related to movies
+  - name: posters
+    description: Operations related to posters
+
+paths:
+  /api/movies:
+    get:
+      tags:
+        - movies
+      summary: Get all movies or search movies
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: Optional search parameter to filter movies by title
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MovieWithPrice'
+
+  /api/movies/{movieId}:
+    get:
+      tags:
+        - movies
+      summary: Get movie by ID
+      parameters:
+        - in: path
+          name: movieId
+          required: true
+          schema:
+            type: integer
+            format: int32
+          description: ID of the movie to retrieve
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieWithPrice'
+
+  /api/posters/{movieId}:
+    get:
+      tags:
+        - posters
+      summary: Get posters by movie ID
+      parameters:
+        - in: path
+          name: movieId
+          required: true
+          schema:
+            type: integer
+            format: int32
+          description: ID of the movie to retrieve posters for
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Poster'
+
+components:
+  schemas:
+    Movie:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: Primary key for the movie
+        title:
+          type: string
+          description: Title of the movie
+        plot:
+          type: string
+          description: Plot summary of the movie
+        trailer:
+          type: string
+          description: URL to the movie trailer
+        rating:
+          type: integer
+          description: Rating of the movie
+        posters:
+          type: array
+          items:
+            $ref: '#/components/schemas/Poster'
+          description: List of posters associated with the movie
+
+    Poster:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: Primary key for the poster
+        horizontal:
+          type: string
+          description: URL to the horizontal version of the poster
+        vertical:
+          type: string
+          description: URL to the vertical version of the poster
+        movie_id:
+          type: integer
+          format: int32
+          description: Movie id to which this poster belongs (foreign key)
+
+    Vendor:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: Primary key for the vendor
+        name:
+          type: string
+          description: Name of the vendor
+
+    MovieVendor:
+      type: object
+      description: Many-to-many table between Movie and Vendor
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: Primary key for the movie-vendor association
+        movie:
+          $ref: '#/components/schemas/Movie'
+          description: The movie associated with the vendor
+        vendor:
+          $ref: '#/components/schemas/Vendor'
+          description: The vendor associated with the movie
+        price:
+          type: number
+          format: double
+          description: Price of the movie from the vendor
+
+    MovieWithPrice:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: Primary key for the movie
+        title:
+          type: string
+          description: Title of the movie
+        plot:
+          type: string
+          description: Plot summary of the movie
+        trailer:
+          type: string
+          description: URL to the movie trailer
+        rating:
+          type: integer
+          description: Rating of the movie
+        posters:
+          type: array
+          items:
+            $ref: '#/components/schemas/Poster'
+          description: List of posters associated with the movie
+        price:
+          type: number
+          format: double
+          description: Modified minimum price of the movie from the vendor
