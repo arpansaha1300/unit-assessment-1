@@ -1,6 +1,9 @@
 package io.next.server.movies;
 
 import java.util.List;
+
+import org.hibernate.annotations.Check;
+
 import io.next.server.posters.Poster;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -40,6 +43,7 @@ public class Movie {
   private String trailer;
 
   @Column(name = "rating", nullable = false)
+  @Check(constraints = "rating <= 5")
   private int rating;
 
   @OneToMany(fetch = FetchType.EAGER, mappedBy = "movie")
