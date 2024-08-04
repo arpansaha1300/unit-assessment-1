@@ -1,20 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-// import Badge from '~common/Badge'
 import Loader from '~common/Loader'
-import Poster from '~common/Poster'
 import Container from '~common/Container'
 import YoutubeEmbed from '~/components/YoutubeEmbed'
+import FadeOutCarousal from '~/components/FadeOutCarousal'
 import { getMovieById } from '~/api'
-import { Transition } from '@headlessui/react'
-import classNames from '~/utils/classNames'
-// import Year from '~/components/Year'
 
 export function Component() {
   const params = useParams()
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [movie, setMovie] = useState([])
+  const [movie, setMovie] = useState({})
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -23,6 +18,15 @@ export function Component() {
       setLoading(false)
     })
   }, [params])
+
+  const images = useMemo(
+    () =>
+      movie.posters?.map(poster => ({
+        src: poster.horizontal,
+        alt: movie.title,
+      })),
+    [movie.posters, movie.title]
+  )
 
   if (loading) {
     return (
@@ -35,7 +39,15 @@ export function Component() {
   return (
     <main>
       <div className="lg:h-screen">
-        <PosterCarousal posters={movie.posters} />
+        <div className="relative lg:absolute top-0 w-full aspect-video lg:aspect-auto lg:h-screen">
+          <FadeOutCarousal
+            images={images}
+            imgClass="w-full h-full object-cover"
+            showBullets={true}
+          />
+
+          <span className="absolute inset-0 z-20 bg-gradient-to-t from-stone-950/60 via-transparent lg:bg-gradient-to-tr lg:from-stone-950" />
+        </div>
 
         <Container
           as="section"
@@ -48,15 +60,7 @@ export function Component() {
             &larr; Back
           </Link>
 
-          {/* <Year year={movie.year} endYear={movie.end_date} fontSize="text-sm" /> */}
-
           <h1 className="mt-1 text-5xl font-bold">{movie.title}</h1>
-
-          {/* <div className="mt-4 flex gap-2.5 flex-wrap">
-            {movie.genre_names.slice(0, 3).map(genre => (
-              <Badge key={genre} badge={genre} />
-            ))}
-          </div> */}
 
           <p className="mt-4">
             <span className="inline-block font-semibold text-2xl text-emerald-300">
@@ -84,79 +88,3 @@ export function Component() {
 }
 
 Component.displayName = 'Details'
-
-function PosterCarousal({ posters }) {
-  const [nextPosterIdx, setNextPosterIdx] = useState(1 % posters.length)
-  const [currPosterIdx, setCurrPosterIdx] = useState(0)
-  const [show, setShow] = useState(true)
-
-  useEffect(() => {
-    scrollTo({ top: 0 })
-  }, [])
-
-  useEffect(() => {
-    let currTimer = null
-    let nextTimer = null
-
-    const interval = setInterval(() => {
-      setShow(false)
-
-      currTimer = setTimeout(() => {
-        setShow(true)
-        setCurrPosterIdx(x => (x + 1) % posters.length)
-      }, 500)
-
-      nextTimer = setTimeout(() => {
-        setNextPosterIdx(x => (x + 1) % posters.length)
-      }, 700)
-    }, 3000)
-
-    return () => {
-      clearInterval(interval)
-      if (currTimer) clearTimeout(currTimer)
-      if (nextTimer) clearTimeout(nextTimer)
-    }
-  }, [posters.length])
-
-  return (
-    <div className="relative lg:absolute top-0 w-full aspect-video lg:aspect-auto lg:h-screen">
-      <Poster
-        poster_url={posters[nextPosterIdx].horizontal}
-        title={posters[nextPosterIdx].title}
-      />
-
-      <Transition
-        show={show}
-        unmount={false}
-        as="div"
-        className={classNames(
-          'absolute inset-0 z-10 data-[closed]:opacity-0',
-          'data-[leave]:transition data-[leave]:ease-in-out data-[leave]:duration-300',
-          'data-[leave]:data-[closed]:opacity-0'
-        )}
-      >
-        <Poster
-          poster_url={posters[currPosterIdx].horizontal}
-          title={posters[currPosterIdx].title}
-        />
-      </Transition>
-
-      <span className="absolute inset-0 z-20 bg-gradient-to-t from-stone-950/60 via-transparent lg:bg-gradient-to-tr lg:from-stone-950" />
-
-      <div className="absolute bottom-2 lg:bottom-4 left-1/2 -translate-x-1/2 z-30 space-x-2.5">
-        {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          posters.map((poster, i) => (
-            <span
-              key={poster.id}
-              className={classNames(
-                'inline-block w-2 h-2 rounded-full',
-                currPosterIdx === i ? 'bg-gray-50' : 'border border-gray-50'
-              )}
-            />
-          ))
-        }
-      </div>
-    </div>
-  )
-}
