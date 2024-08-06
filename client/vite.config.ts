@@ -15,6 +15,7 @@ export default defineConfig({
     },
   },
   server: {
+    host: true, // for docker
     port: 3000,
   },
 })
