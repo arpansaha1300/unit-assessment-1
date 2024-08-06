@@ -1,8 +1,13 @@
-For some reason the mysql server in the mysql container does not start automatically.
+If we specify a **named volume for mysql**, then everything works normally.
 
-We need to manually start it by entering these commands in the container shell:
-
+```yml
+volumes:
+  - unit-1-volume:/var/lib/mysql
 ```
+
+But if we try to start the containers without specifying a named volume for mysql, then the mysql server in the mysql container **does not start automatically** for some reason. In that case we need to manually start it by entering these commands in the container shell:
+
+```bash
 docker container exec -it <mysql_container_name> bash
 
 $ mysql -u root -p

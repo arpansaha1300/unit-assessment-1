@@ -2,6 +2,8 @@ services:
   mysql:
     container_name: unit-1-mysql
     image: mysql:8.4
+    volumes:
+      - unit-1-volume:/var/lib/mysql
     env_file:
       - ./env/mysql.env
 
@@ -28,3 +30,6 @@ services:
     tty: true
     depends_on:
       - server
+
+volumes:
+  unit-1-volume:
